@@ -27,8 +27,6 @@ async function updateCurrencyRates() {
 }
 
 
-setInterval(updateCurrencyRates, 60 * 60 * 1000);
-
 app.get('/', (req, res) => {
     res.render('index', {
         activePage: 'home',
