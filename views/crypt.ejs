@@ -4,40 +4,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crypto — CurrencyChacker</title>
+    <title>Crypto — CurrencyChecker</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/styles/style.css">
+    
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 </head>
 
 <body>
 
     <%- include('partials/header') %>
 
-    <main>
-        <h1>Crypto</h1>
-        <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-            ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-            nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
-            anim id est laborum.
-        </p>
-        <p>
-            Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem
-            aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
-            Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni
-            dolores eos qui ratione voluptatem sequi nesciunt.
-        </p>
-        <p>
-            At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti
-            atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique
-            sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.
-        </p>
+    <main>        
+        <div class="tabs-header">
+            <button class="tab-btn active" onclick="switchMainTab(event, 'public-crypto')">Public Projects</button>
+            <button class="tab-btn" onclick="switchMainTab(event, 'my-crypto')">My Projects</button>
+        </div>
+
+        <div id="my-crypto" class="tab-content">
+            <div class="stat-card" style="padding: 25px;">
+                <p style="color: var(--text-muted);">Your personal projects</p>
+            </div>
+        </div>
+
+        <div id="public-crypto" class="tab-content active">
+            <div class="crypto-layout">
+                
+                <div class="crypto-list">
+                    <button class="coin-btn active" onclick="switchChart(event, 'btc')">
+                        <span class="coin-name">Bitcoin</span> <span class="coin-ticker">BTC</span>
+                    </button>
+                    <button class="coin-btn" onclick="switchChart(event, 'eth')">
+                        <span class="coin-name">Ethereum</span> <span class="coin-ticker">ETH</span>
+                    </button>
+                    <button class="coin-btn" onclick="switchChart(event, 'sol')">
+                        <span class="coin-name">Solana</span> <span class="coin-ticker">SOL</span>
+                    </button>
+                    <button class="coin-btn" onclick="switchChart(event, 'ada')">
+                        <span class="coin-name">Cardano</span> <span class="coin-ticker">ADA</span>
+                    </button>
+                    <button class="coin-btn" onclick="switchChart(event, 'bnb')">
+                        <span class="coin-name">Binance Coin</span> <span class="coin-ticker">BNB</span>
+                    </button>
+                    <button class="coin-btn" onclick="switchChart(event, 'xpr')">
+                        <span class="coin-name">Ripple</span> <span class="coin-ticker">XPR</span>
+                    </button>
+                    <button class="coin-btn" onclick="switchChart(event, 'ton')">
+                        <span class="coin-name">Toncoin</span> <span class="coin-ticker">TON</span>
+                    </button>
+                    <button class="coin-btn" onclick="switchChart(event, 'doge')">
+                        <span class="coin-name">Dogecoin</span> <span class="coin-ticker">DOGE</span>
+                    </button>
+                    <button class="coin-btn" onclick="switchChart(event, 'pepe')">
+                        <span class="coin-name">Pepe</span> <span class="coin-ticker">PEPE</span>
+                    </button>
+                </div>
+
+                <div class="chart-wrapper">
+                    <div id="btc" class="tv-chart active"></div>
+                    <div id="eth" class="tv-chart"></div>
+                    <div id="sol" class="tv-chart"></div>
+                    <div id="ada" class="tv-chart"></div>
+                    <div id="bnb" class="tv-chart"></div>
+                    <div id="xpr" class="tv-chart"></div>
+                    <div id="ton" class="tv-chart"></div>
+                    <div id="doge" class="tv-chart"></div>
+                    <div id="pepe" class="tv-chart"></div>
+                </div>
+
+            </div>
+        </div>
     </main>
 
     <script src="/js/menu.js"></script>
+    <script src="/js/crypt.js"></script>
 </body>
 
 </html>

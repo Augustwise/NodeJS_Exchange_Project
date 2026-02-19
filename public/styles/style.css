@@ -437,6 +437,136 @@ body.menu-open {
     overflow: hidden;
 }
 
+/* крипта */
+.tabs-header {
+    display: flex;
+    gap: 30px;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 0;
+}
+
+.tab-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 10px 0 15px 0;
+    cursor: pointer;
+    position: relative;
+    transition: 0.3s;
+}
+
+.tab-btn:hover {
+    color: var(--text-main);
+}
+
+.tab-btn.active {
+    color: var(--primary-accent);
+}
+
+.tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--primary-accent);
+    border-radius: 3px 3px 0 0;
+}
+
+.tab-content {
+    display: none;
+    animation: fadeIn 0.4s ease;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.crypto-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr; 
+    gap: 25px;
+    margin-top: 0;
+}
+
+.crypto-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.coin-btn {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 18px 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(12px);
+}
+
+.coin-btn .coin-name {
+    color: var(--text-main);
+    font-size: 1.05rem;
+    font-weight: 500;
+}
+
+.coin-btn .coin-ticker {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.coin-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.coin-btn.active {
+    background: rgba(0, 227, 150, 0.08); 
+    border-color: var(--primary-accent);
+    box-shadow: 0 4px 15px rgba(0, 227, 150, 0.15);
+}
+
+.coin-btn.active .coin-ticker {
+    color: var(--primary-accent);
+}
+
+.tv-chart {
+    display: none;
+    width: 100%;
+}
+
+.tv-chart.active {
+    display: block;
+    animation: fadeIn 0.4s ease;
+}
+
+@media (max-width: 900px) {
+    .crypto-layout {
+        display: flex; 
+        flex-direction: column;
+    }
+    
+    .chart-wrapper {
+        order: 1;
+    }
+    
+    .crypto-list {
+        order: 2; 
+    }
+}
+
 @media (max-width: 1100px) {
     header {
         padding: 18px 4%;
