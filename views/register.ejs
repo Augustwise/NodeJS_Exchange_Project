@@ -4,16 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Register</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../public/styles/style.css">
+    <link rel="stylesheet" href="/styles/style.css">
 </head>
 
 <body>
-    <div class="login-container">
-        <h1>Login</h1>
+
+    <%- include('partials/header') %>
+
+    <div class="register-container">
+        <h1>Register</h1>
         <form>
             <div class="form-group">
                 <label>Email</label>
@@ -23,12 +26,18 @@
                 <label>Password</label>
                 <input type="password" id="password" name="password" required>
             </div>
-            <button type="submit">Login</button>
+            <div class="form-group">
+                <label>Confirm Password</label>
+                <input type="password" id="confirm" name="confirm" required>
+            </div>
+            <button type="submit">Register</button>
         </form>
         <div class="login-register-link">
-            Still don't have an account? <a href="register.html">Register here</a>
+            Already have an account? <a href="/login">Login here</a>
         </div>
     </div>
+
+    <script src="/js/menu.js"></script>
 </body>
 
 </html>

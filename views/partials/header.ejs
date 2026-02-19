@@ -1,0 +1,27 @@
+<header>
+    <a href="/" class="name">
+        <svg class="logo-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        CurrencyChacker
+    </a>
+    <nav id="mainNav" class="main-nav">
+        <ul>
+            <li><a href="/"       class="<%= activePage === 'home'    ? 'active' : '' %>">Home</a></li>
+            <li><a href="/crypt"  class="<%= activePage === 'crypt'   ? 'active' : '' %>">Crypto</a></li>
+            <li><a href="/about"  class="<%= activePage === 'about'   ? 'active' : '' %>">About</a></li>
+            <li><a href="/contact" class="<%= activePage === 'contact' ? 'active' : '' %>">Contact</a></li>
+        </ul>
+    </nav>
+    <div class="logInButtons">
+        <a href="/login" class="btn btn-text">Log In</a>
+        <a href="/register" class="btn btn-primary">Sign Up</a>
+    </div>
+    <button id="menuToggle" class="menu-toggle" type="button" aria-label="Toggle navigation menu" aria-controls="mainNav" aria-expanded="false">
+        <img src="/images/burger_menu.svg" alt="" class="menu-icon icon-open">
+        <img src="/images/close.svg" alt="" class="menu-icon icon-close">
+    </button>
+</header>
+<div id="menuOverlay" class="menu-overlay"></div>

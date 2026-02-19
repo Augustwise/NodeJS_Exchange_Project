@@ -8,46 +8,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../public/styles/style.css">
-    <!--JS is here for now it will need to be moved later-->
+    <link rel="stylesheet" href="/styles/style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
 
-    <header>
-        <div class="name">
-            <svg class="logo-icon" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round" />
-                <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round" />
-                <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round" />
-            </svg>
-            CurrencyChacker
-        </div>
-        <nav id="mainNav" class="main-nav">
-            <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Crypt</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Contact</a></li>
-            </ul>
-        </nav>
-        <div class="logInButtons">
-            <a href="login.html" class="btn btn-text">Log In</a>
-            <a href="register.html" class="btn btn-primary">Sign Up</a>
-        </div>
-        <button id="menuToggle" class="menu-toggle" type="button" aria-label="Toggle navigation menu"
-            aria-controls="mainNav" aria-expanded="false">
-            <img src="../public/images/burger_menu.svg" alt="" class="menu-icon icon-open">
-            <img src="../public/images/close.svg" alt="" class="menu-icon icon-close">
-        </button>
-
-    </header>
-    <div id="menuOverlay" class="menu-overlay"></div>
+    <%- include('partials/header') %>
 
     <main>
         <div class="hero-section">
@@ -103,14 +70,14 @@
                             <option value="AUD">AUD</option>
                         </select>
                     </div>
-                    
+
                     <div class="input-group">
                         <input type="text" value="41.50">
                         <select class="currency-select">
-                            <option value="UAH">UAH </option>
+                            <option value="UAH">UAH</option>
                             <option value="USD">USD</option>
                             <option value="EUR">EUR</option>
-                            <option value="GBP">GBP </option>
+                            <option value="GBP">GBP</option>
                             <option value="PLN">PLN</option>
                             <option value="JPY">JPY</option>
                             <option value="CNY">CNY</option>
@@ -127,29 +94,30 @@
         <div class="stats-row">
             <div class="stat-card">
                 <div class="stat-info">
-                    <img src="../public/images/Flag_of_Europe.webp" alt="">
+                    <img src="/images/Flag_of_Europe.webp" alt="">
                     <h3>EUR</h3>
                 </div>
                 <div class="stat-value">43.92</div>
             </div>
             <div class="stat-card">
                 <div class="stat-info">
-                    <img src="../public/images/Flag_UK.webp" alt="">
+                    <img src="/images/Flag_UK.webp" alt="">
                     <h3>GBP</h3>
                 </div>
                 <div class="stat-value">52.18</div>
             </div>
             <div class="stat-card">
                 <div class="stat-info">
-                    <img src="../public/images/Flag_China.svg" alt="">
+                    <img src="/images/Flag_China.svg" alt="">
                     <h3>CHF</h3>
                 </div>
                 <div class="stat-value">46.75</div>
             </div>
         </div>
     </main>
+
+    <script src="/js/index.js"></script>
+    <script src="/js/menu.js"></script>
 </body>
-<script src="../public/js/index.js"></script>
-<script src="../public/js/menu.js"></script>
 
 </html>

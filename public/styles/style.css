@@ -45,6 +45,8 @@ header {
     display: flex;
     align-items: center;
     gap: 10px;
+    text-decoration: none;
+    color: var(--text-main);
 }
 
 .logo-icon {
@@ -67,6 +69,12 @@ header {
 
 .main-nav a:hover {
     color: var(--primary-accent);
+}
+
+.main-nav a.active {
+    color: var(--text-main);
+    border-bottom: 2px solid var(--primary-accent);
+    padding-bottom: 2px;
 }
 
 .menu-toggle {
