@@ -19,6 +19,7 @@ async function updateCurrencyRates() {
         const response = await fetch('https://api.frankfurter.app/latest?from=USD');
         const data = await response.json();
         curencyChange.rates = data.rates;
+        curencyChange.rates['UAH'] = 43.46; //this is because frankfurter API does not include UAH in the rates, so we add it manually
         curencyChange.rates['USD'] = 1; //this is because the API does not include the base currency in the rates
         curencyChange.lastUpdated = new Date();
     } catch (error) {
