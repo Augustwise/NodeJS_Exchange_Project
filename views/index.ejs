@@ -10,6 +10,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/styles/style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        const SERVER_RATES = <%- JSON.stringify(locals.rates || {}) %>;
+    </script>
 </head>
 
 <body>
@@ -57,9 +61,9 @@
                     <div class="converter-header">Quick currency converter</div>
 
                     <div class="input-group">
-                        <input type="number" value="1">
-                        <select class="currency-select">
-                            <option value="USD">USD</option>
+                        <input type="number" id="amount-one" value="1" min="0"> 
+                        <select class="currency-select" id="currency-one">
+                            <option value="USD" selected>USD</option>
                             <option value="UAH">UAH</option>
                             <option value="EUR">EUR</option>
                             <option value="GBP">GBP</option>
@@ -70,11 +74,13 @@
                             <option value="AUD">AUD</option>
                         </select>
                     </div>
+
+                    <div id="rate" style="text-align: center; margin: 10px 0; color: #888; font-size: 14px;"></div>
 
                     <div class="input-group">
-                        <input type="text" value="41.50">
-                        <select class="currency-select">
-                            <option value="UAH">UAH</option>
+                        <input type="number" id="amount-two" value="0" min="0">
+                        <select class="currency-select" id="currency-two">
+                            <option value="UAH" selected>UAH</option>
                             <option value="USD">USD</option>
                             <option value="EUR">EUR</option>
                             <option value="GBP">GBP</option>
@@ -85,8 +91,6 @@
                             <option value="AUD">AUD</option>
                         </select>
                     </div>
-
-                    <button class="btn btn-primary convert-btn">Convert Now</button>
                 </div>
             </div>
         </div>
@@ -118,6 +122,7 @@
 
     <script src="/js/index.js"></script>
     <script src="/js/menu.js"></script>
+    <script src="/js/converter.js"></script>
 </body>
 
 </html>
