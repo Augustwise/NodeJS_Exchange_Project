@@ -71,7 +71,7 @@ function changeCurrency(currencyKey) {
     document.getElementById('currentRate').innerText = data.current;
 
     const changeElem = document.getElementById('rateChange');
-    changeElem.innerHTML = `${data.change} <span class="time-label">(сьогодні)</span>`;
+    changeElem.innerHTML = `${data.change} <span class="time-label">(today)</span>`;
 
     if (data.isPositive) {
         changeElem.className = 'rate-change positive';
