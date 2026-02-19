@@ -9,8 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/styles/style.css">
-    
-    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+ 
 </head>
 
 <body>
@@ -22,6 +21,10 @@
             <button class="tab-btn active" onclick="switchMainTab(event, 'public-crypto')">Public Projects</button>
             <button class="tab-btn" onclick="switchMainTab(event, 'my-crypto')">My Projects</button>
         </div>
+
+        <script type="module" src="https://widgets.tradingview-widget.com/w/en/tv-ticker-tape.js"></script>
+
+<tv-ticker-tape symbols='FOREXCOM:SPXUSD,FOREXCOM:NSXUSD,FOREXCOM:DJI,FX:EURUSD,BITSTAMP:BTCUSD,BITSTAMP:ETHUSD' theme="dark"></tv-ticker-tape>
 
         <div id="my-crypto" class="tab-content">
             <div class="stat-card" style="padding: 25px;">
@@ -80,6 +83,8 @@
 
     <script src="/js/menu.js"></script>
     <script src="/js/crypt.js"></script>
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <script type="module" src="https://widgets.tradingview-widget.com/w/en/tv-ticker-tape.js"></script>
 </body>
 
 </html>
