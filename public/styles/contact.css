@@ -1,0 +1,32 @@
+.contact-page .contact-main {
+    padding: 40px 5%;
+    max-width: 900px;
+}
+
+.contact-page .contact-main h1 {
+    margin-bottom: 20px;
+}
+
+.contact-page .contact-main p {
+    color: var(--text-muted);
+    line-height: 1.7;
+    margin-bottom: 18px;
+}
+
+@media (max-width: 900px) {
+    .contact-page .contact-main {
+        padding: 32px 4%;
+    }
+}
+
+@media (max-width: 768px) {
+    .contact-page .contact-main {
+        padding: 24px 16px;
+    }
+}
+
+@media (max-width: 400px) {
+    .contact-page .contact-main {
+        padding: 20px 12px;
+    }
+}

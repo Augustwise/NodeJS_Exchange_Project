@@ -1,0 +1,328 @@
+.home-page main {
+    padding: 40px 5%;
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+}
+
+.home-page .hero-section {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 25px;
+}
+
+.home-page .leftPart,
+.home-page .rightPart {
+    min-width: 0;
+}
+
+.home-page .chart-wrapper,
+.home-page .converter-card,
+.home-page .stat-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    backdrop-filter: blur(12px);
+}
+
+.home-page .chart-wrapper {
+    padding: 25px;
+}
+
+.home-page .chart-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.home-page .chart-title-group {
+    min-width: 0;
+}
+
+.home-page .price-info {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 15px;
+}
+
+.home-page #currentRate {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 700;
+}
+
+.home-page .rate-change.positive {
+    color: var(--primary-accent);
+}
+
+.home-page .rate-change.negative {
+    color: #FF4560;
+}
+
+.home-page .canvas-container {
+    height: clamp(220px, 35vw, 300px);
+}
+
+.home-page select {
+    background: transparent;
+    border: none;
+    color: var(--text-main);
+    font-size: 1rem;
+    cursor: pointer;
+    outline: none;
+}
+
+.home-page select option {
+    background: var(--bg-color);
+}
+
+.home-page .time-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.home-page .time-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    color: var(--text-muted);
+    padding: 6px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+    white-space: nowrap;
+}
+
+.home-page .time-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-main);
+}
+
+.home-page .time-btn.active {
+    background: var(--primary-accent);
+    color: #000;
+}
+
+.home-page .converter-card {
+    padding: 30px;
+}
+
+.home-page .converter-header {
+    font-size: 1.2rem;
+    margin-bottom: 25px;
+    font-weight: 600;
+}
+
+.home-page .input-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 15px;
+}
+
+.home-page .input-group input {
+    background: transparent;
+    border: none;
+    color: var(--text-main);
+    font-size: 1.4rem;
+    outline: none;
+    flex: 1;
+    min-width: 0;
+}
+
+.home-page .currency-select {
+    border: none;
+    background: transparent;
+    color: var(--text-main);
+    font-size: 1rem;
+    max-width: 100%;
+}
+
+.home-page .swap-btn {
+    background: var(--primary-accent);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    margin: 20px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: 0.3s;
+}
+
+.home-page .swap-btn:hover {
+    transform: rotate(180deg);
+    box-shadow: 0 6px 20px rgba(0, 227, 150, 0.4);
+}
+
+.home-page .convert-btn {
+    width: 100%;
+    margin-top: 10px;
+    padding: 14px;
+    font-size: 1rem;
+}
+
+.home-page .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.home-page .stat-card {
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.home-page .stat-info {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.home-page .stat-value {
+    font-size: clamp(1.3rem, 2.8vw, 1.6rem);
+    font-weight: 700;
+}
+
+.home-page .stat-info img {
+    width: clamp(30px, 4vw, 40px);
+    height: clamp(30px, 4vw, 40px);
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+@media (max-width: 900px) {
+    .home-page main {
+        padding: 32px 4%;
+        gap: 38px;
+    }
+
+    .home-page .hero-section {
+        grid-template-columns: 1fr;
+    }
+
+    .home-page .chart-header-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+.home-page .chart-title-group {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .home-page .time-controls {
+        justify-content: flex-start;
+    }
+
+    .home-page .converter-card {
+        padding: 24px;
+    }
+}
+
+@media (max-width: 768px) {
+    .home-page main {
+        padding: 24px 16px;
+        gap: 30px;
+    }
+
+    .home-page .stats-row {
+        grid-template-columns: 1fr;
+    }
+
+    .home-page .stat-card {
+        padding: 16px;
+    }
+
+    .home-page .converter-header {
+        font-size: 1.1rem;
+    }
+
+    .home-page .input-group {
+        padding: 12px;
+    }
+
+    .home-page .input-group input {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 560px) {
+    .home-page .chart-wrapper,
+    .home-page .converter-card,
+    .home-page .stat-card {
+        border-radius: 16px;
+    }
+
+    .home-page .chart-wrapper {
+        padding: 16px;
+    }
+
+    .home-page .chart-header-row {
+        margin-bottom: 16px;
+    }
+
+    .home-page .price-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+
+    .home-page .time-controls {
+        width: 100%;
+        gap: 8px;
+    }
+
+    .home-page .time-btn {
+        flex: 1;
+        min-width: 72px;
+        text-align: center;
+        padding: 8px 10px;
+    }
+
+    .home-page .canvas-container {
+        height: 220px;
+    }
+
+    .home-page .converter-card {
+        padding: 18px;
+    }
+
+    .home-page .input-group {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .home-page .currency-select {
+        width: 100%;
+        padding: 8px 0;
+    }
+}
+
+@media (max-width: 400px) {
+    .home-page main {
+        padding: 20px 12px;
+    }
+
+    .home-page #currentRate {
+        font-size: 1.45rem;
+    }
+
+    .home-page .stat-value {
+        font-size: 1.35rem;
+    }
+}

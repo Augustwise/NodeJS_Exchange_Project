@@ -1,0 +1,32 @@
+.about-page .about-main {
+    padding: 40px 5%;
+    max-width: 900px;
+}
+
+.about-page .about-main h1 {
+    margin-bottom: 20px;
+}
+
+.about-page .about-main p {
+    color: var(--text-muted);
+    line-height: 1.7;
+    margin-bottom: 18px;
+}
+
+@media (max-width: 900px) {
+    .about-page .about-main {
+        padding: 32px 4%;
+    }
+}
+
+@media (max-width: 768px) {
+    .about-page .about-main {
+        padding: 24px 16px;
+    }
+}
+
+@media (max-width: 400px) {
+    .about-page .about-main {
+        padding: 20px 12px;
+    }
+}

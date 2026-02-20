@@ -1,0 +1,94 @@
+.login-page .login-container,
+.register-page .register-container {
+    min-height: 100vh;
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-page .login-container form,
+.register-page .register-container form {
+    background: var(--card-bg);
+    padding: 40px;
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    width: min(100%, 350px);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.login-page .form-group,
+.register-page .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.login-page .form-group input,
+.register-page .form-group input {
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    background: transparent;
+    color: var(--text-main);
+    outline: none;
+    transition: 0.3s;
+}
+
+.login-page .form-group input:focus,
+.register-page .form-group input:focus {
+    border-color: var(--primary-accent);
+}
+
+.login-page button,
+.register-page button {
+    background: var(--primary-accent);
+    border: none;
+    padding: 12px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.login-page button:hover,
+.register-page button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 227, 150, 0.4);
+}
+
+.login-page .login-register-link,
+.register-page .login-register-link {
+    margin-top: 20px;
+    color: var(--text-muted);
+}
+
+.login-page .login-register-link a,
+.register-page .login-register-link a {
+    color: var(--primary-accent);
+    text-decoration: none;
+}
+
+@media (max-width: 560px) {
+    .login-page .login-container,
+    .register-page .register-container {
+        padding: 20px 14px;
+    }
+
+    .login-page .login-container form,
+    .register-page .register-container form {
+        width: 100%;
+        padding: 24px 18px;
+        gap: 16px;
+    }
+}
+
+@media (max-width: 400px) {
+    .login-page .login-container h1,
+    .register-page .register-container h1 {
+        font-size: 1.5rem;
+    }
+}
