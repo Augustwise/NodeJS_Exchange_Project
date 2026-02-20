@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/base.css">
+    <link rel="stylesheet" href="/styles/account.css">
+</head>
+
+<body class="account-page">
+    <%- include('partials/header') %>
+
+    <main class="account-main">
+        <section class="account-card">
+            <h1>My Account</h1>
+            <p class="account-subtitle">Welcome, <%= account.name %>!</p>
+
+            <div class="account-info">
+                <div class="account-row">
+                    <span>User ID</span>
+                    <strong><%= account.id %></strong>
+                </div>
+                <div class="account-row">
+                    <span>First Name</span>
+                    <strong><%= account.name %></strong>
+                </div>
+                <div class="account-row">
+                    <span>Last Name</span>
+                    <strong><%= account.surname %></strong>
+                </div>
+                <div class="account-row">
+                    <span>Date of Birth</span>
+                    <strong><%= account.dateOfBirth %></strong>
+                </div>
+                <div class="account-row">
+                    <span>Country</span>
+                    <strong><%= account.country %></strong>
+                </div>
+                <div class="account-row">
+                    <span>Email</span>
+                    <strong><%= account.email %></strong>
+                </div>
+            </div>
+
+            <form action="/logout" method="post" class="logout-form">
+                <button type="submit" class="btn btn-primary">Log Out</button>
+            </form>
+        </section>
+    </main>
+
+    <script src="/js/menu.js"></script>
+</body>
+
+</html>

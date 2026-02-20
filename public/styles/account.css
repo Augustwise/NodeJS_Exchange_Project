@@ -1,0 +1,89 @@
+.account-page .account-main {
+    min-height: calc(100vh - 90px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 28px 16px;
+}
+
+.account-page .account-card {
+    width: min(100%, 560px);
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 22px;
+    padding: 30px 26px;
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.25);
+}
+
+.account-page h1 {
+    font-size: clamp(1.6rem, 2.4vw, 2.1rem);
+}
+
+.account-page .account-subtitle {
+    margin-top: 8px;
+    color: var(--text-muted);
+}
+
+.account-page .account-info {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.account-page .account-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.account-page .account-row span {
+    color: var(--text-muted);
+}
+
+.account-page .account-row strong {
+    text-align: right;
+    word-break: break-word;
+}
+
+.account-page .logout-form {
+    margin-top: 24px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.account-page .logout-form .btn {
+    border: none;
+    background: #c0392b;
+}
+
+.account-page .logout-form .btn:hover {
+    background: #a93226;
+}
+
+@media (max-width: 680px) {
+    .account-page .account-card {
+        padding: 22px 16px;
+    }
+
+    .account-page .account-row {
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .account-page .account-row strong {
+        text-align: left;
+    }
+
+    .account-page .logout-form {
+        justify-content: stretch;
+    }
+
+    .account-page .logout-form .btn {
+        width: 100%;
+    }
+}
