@@ -20,17 +20,27 @@
     <main>        
         <div class="tabs-header">
             <button class="tab-btn active" onclick="switchMainTab(event, 'public-crypto')">Public Projects</button>
-            <button class="tab-btn" onclick="switchMainTab(event, 'my-crypto')">My Projects</button>
+            <button class="tab-btn" onclick="switchMainTab(event, 'users-crypto')">Users Projects</button>
+            <button class="tab-btn-right" onclick="switchMainTab(event, 'my-crypto')">My Projects</button>
         </div>
 
-        <script type="module" src="https://widgets.tradingview-widget.com/w/en/tv-ticker-tape.js"></script>
+        <tv-ticker-tape symbols='FOREXCOM:SPXUSD,FOREXCOM:NSXUSD,FOREXCOM:DJI,FX:EURUSD,BITSTAMP:BTCUSD,BITSTAMP:ETHUSD' theme="dark"></tv-ticker-tape>
 
-<tv-ticker-tape symbols='FOREXCOM:SPXUSD,FOREXCOM:NSXUSD,FOREXCOM:DJI,FX:EURUSD,BITSTAMP:BTCUSD,BITSTAMP:ETHUSD' theme="dark"></tv-ticker-tape>
+        <div id="users-crypto" class="tab-content">
+            <div class="stat-card" style="padding: 25px;">
+                <p style="color: var(--text-muted);">Users projects</p>
+            </div>
+        </div>
 
         <div id="my-crypto" class="tab-content">
-            <div class="stat-card" style="padding: 25px;">
-                <p style="color: var(--text-muted);">Your personal projects</p>
-            </div>
+
+            <% if (currentUser) { %>
+                <a href="/create" class="btn btn-primary">Create</a>
+            <% } else { %>
+                <div class="stat-card" style="padding: 25px;">
+                    <p style="color: var(--text-muted);">You need to create an account first</p>
+                </div>
+            <% } %>
         </div>
 
         <div id="public-crypto" class="tab-content active">

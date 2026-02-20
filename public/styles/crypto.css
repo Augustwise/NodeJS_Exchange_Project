@@ -36,6 +36,19 @@
     transition: 0.3s;
 }
 
+.crypto-page .tab-btn-right {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 10px 0 15px 0;
+    margin-left: auto;
+    cursor: pointer;
+    position: relative;
+    transition: 0.3s;
+}
+
 .crypto-page .tab-btn:hover {
     color: var(--text-main);
 }
@@ -45,6 +58,25 @@
 }
 
 .crypto-page .tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--primary-accent);
+    border-radius: 3px 3px 0 0;
+}
+
+.crypto-page .tab-btn-right:hover {
+    color: var(--text-main);
+}
+
+.crypto-page .tab-btn-right.active {
+    color: var(--primary-accent);
+}
+
+.crypto-page .tab-btn-right.active::after {
     content: '';
     position: absolute;
     bottom: -1px;
@@ -137,6 +169,7 @@
     display: block;
     animation: fadeIn 0.4s ease;
 }
+
 
 @media (max-width: 900px) {
     .crypto-page main {
