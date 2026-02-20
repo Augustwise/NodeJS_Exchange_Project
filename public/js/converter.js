@@ -4,39 +4,36 @@ const currencyOne = document.getElementById('currency-one');
 const currencyTwo = document.getElementById('currency-two');
 const rate = document.getElementById('rate');
 
-function calculateForward() {
-    const currencyOneValue = currencyOne.value;
-    const currencyTwoValue = currencyTwo.value;
+function calculate(e) {
+    const currency1 = currencyOne.value;
+    const currency2 = currencyTwo.value;
 
-    if (!SERVER_RATES[currencyOneValue] || !SERVER_RATES[currencyTwoValue]) {
-        console.warn("No data exists");
+    if (!SERVER_RATES[currency1] || !SERVER_RATES[currency2]){
+        console.warn(`Missing rate for ${currency1} or ${currency2}`);
         return;
     }
 
-    const rateOne = SERVER_RATES[currencyOneValue];
-    const rateTwo = SERVER_RATES[currencyTwoValue];
+    const rate1 = SERVER_RATES[currency1];
+    const rate2 = SERVER_RATES[currency2];
 
-    const amountInBase = amountOne.value / rateOne;
-    const finalAmount = amountInBase * rateTwo;
+    let sourceInput = amountOne;
+    let targetInput = amountTwo;
+    let sourceRate = rate1;
+    let targetRate = rate2;
 
-    amountTwo.value = finalAmount.toFixed(2);
-    updateRateText(currencyOneValue, currencyTwoValue, rateOne, rateTwo);
-}
+    if (e && e.target === amountTwo) {
+        sourceInput = amountTwo;
+        targetInput = amountOne;
+        sourceRate = rate2;
+        targetRate = rate1;
+    }
 
-function calculateBackward() {
-    const currencyOneValue = currencyOne.value;
-    const currencyTwoValue = currencyTwo.value;
+    const amountInBase = sourceInput.value / sourceRate; 
 
-    if (!SERVER_RATES[currencyOneValue] || !SERVER_RATES[currencyTwoValue]) return;
+    targetInput.value = (amountInBase * targetRate).toFixed(2);
 
-    const rateOne = SERVER_RATES[currencyOneValue];
-    const rateTwo = SERVER_RATES[currencyTwoValue];
+    updateRateText(currency1, currency2, rate1, rate2);
 
-    const amountInBase = amountTwo.value / rateTwo;
-    const finalAmount = amountInBase * rateOne;
-
-    amountOne.value = finalAmount.toFixed(2);
-    updateRateText(currencyOneValue, currencyTwoValue, rateOne, rateTwo);
 }
 
 function updateRateText(curr1, curr2, r1, r2) {
@@ -44,9 +41,9 @@ function updateRateText(curr1, curr2, r1, r2) {
     rate.innerText = `1 ${curr1} = ${singleRate.toFixed(4)} ${curr2}`;
 }
 
-amountOne.addEventListener('input', calculateForward);
-amountTwo.addEventListener('input', calculateBackward);
-currencyOne.addEventListener('change', calculateForward);
-currencyTwo.addEventListener('change', calculateForward);
+amountOne.addEventListener('input', calculate);
+amountTwo.addEventListener('input', calculate);
+currencyOne.addEventListener('change', calculate);
+currencyTwo.addEventListener('change', calculate);
 
-calculateForward();
+calculate();
