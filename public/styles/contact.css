@@ -1,0 +1,49 @@
+/* Contact Page Styles */
+
+.contact-page {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.contact-title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    margin-bottom: 30px;
+    color: var(--text-main);
+}
+
+.contact-text {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+}
+
+.contact-text:last-child {
+    margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+    .contact-title {
+        font-size: 1.8rem;
+        margin-bottom: 24px;
+    }
+
+    .contact-text {
+        font-size: 1rem;
+        line-height: 1.7;
+    }
+}
+
+@media (max-width: 560px) {
+    .contact-title {
+        font-size: 1.5rem;
+        margin-bottom: 18px;
+    }
+
+    .contact-text {
+        font-size: 0.95rem;
+        margin-bottom: 16px;
+    }
+}
