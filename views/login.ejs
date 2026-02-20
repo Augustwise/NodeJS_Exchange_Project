@@ -18,23 +18,25 @@
 
     <div class="login-container">
         <h1>Login</h1>
-        <form>
+        <form id="loginForm" novalidate>
             <div class="form-group">
-                <label>Email</label>
-                <input type="email" id="email" name="email" required>
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" maxlength="255" autocomplete="email" required>
             </div>
             <div class="form-group">
-                <label>Password</label>
-                <input type="password" id="password" name="password" required>
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" autocomplete="current-password" required>
             </div>
             <button type="submit">Login</button>
         </form>
+        <p id="loginMessage" class="form-message" role="alert" aria-live="polite"></p>
         <div class="login-register-link">
             Still don't have an account? <a href="/register">Register here</a>
         </div>
     </div>
 
     <script src="/js/menu.js"></script>
+    <script src="/js/login.js"></script>
 </body>
 
 </html>

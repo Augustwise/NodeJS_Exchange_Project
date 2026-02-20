@@ -13,11 +13,23 @@
             <li><a href="/crypt"  class="<%= activePage === 'crypt'   ? 'active' : '' %>">Crypto</a></li>
             <li><a href="/about"  class="<%= activePage === 'about'   ? 'active' : '' %>">About</a></li>
             <li><a href="/contact" class="<%= activePage === 'contact' ? 'active' : '' %>">Contact</a></li>
+            <% if (currentUser) { %>
+                <li class="mobile-auth-item"><a href="/account" class="<%= activePage === 'account' ? 'active' : '' %>">Account</a></li>
+            <% } else { %>
+                <li class="mobile-auth-item mobile-auth-links">
+                    <a href="/login">Log In</a>
+                    <a href="/register">Sign Up</a>
+                </li>
+            <% } %>
         </ul>
     </nav>
     <div class="logInButtons">
-        <a href="/login" class="btn btn-text">Log In</a>
-        <a href="/register" class="btn btn-primary">Sign Up</a>
+        <% if (currentUser) { %>
+            <a href="/account" class="btn btn-primary">Account</a>
+        <% } else { %>
+            <a href="/login" class="btn btn-text">Log In</a>
+            <a href="/register" class="btn btn-primary">Sign Up</a>
+        <% } %>
     </div>
     <button id="menuToggle" class="menu-toggle" type="button" aria-label="Toggle navigation menu" aria-controls="mainNav" aria-expanded="false">
         <img src="/images/burger_menu.svg" alt="" class="menu-icon icon-open">

@@ -20,6 +20,10 @@
     gap: 20px;
 }
 
+.register-page .register-container form {
+    width: min(100%, 420px);
+}
+
 .login-page .form-group,
 .register-page .form-group {
     display: flex;
@@ -27,8 +31,30 @@
     gap: 6px;
 }
 
+.register-page .input-with-icon {
+    position: relative;
+}
+
+.register-page .input-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    color: var(--text-muted);
+    pointer-events: none;
+}
+
+.register-page .input-icon svg {
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+}
+
 .login-page .form-group input,
-.register-page .form-group input {
+.register-page .form-group input,
+.register-page .form-group select {
     padding: 12px;
     border-radius: 10px;
     border: 1px solid var(--border-color);
@@ -38,8 +64,28 @@
     transition: 0.3s;
 }
 
+.register-page .form-group .input-with-icon input,
+.register-page .form-group .input-with-icon select {
+    padding-left: 40px;
+    width: 100%;
+}
+
+.register-page .form-group select {
+    appearance: none;
+    cursor: pointer;
+}
+
+.register-page .form-group select:invalid {
+    color: var(--text-muted);
+}
+
+.register-page #dateOfBirth {
+    cursor: text;
+}
+
 .login-page .form-group input:focus,
-.register-page .form-group input:focus {
+.register-page .form-group input:focus,
+.register-page .form-group select:focus {
     border-color: var(--primary-accent);
 }
 
@@ -54,10 +100,34 @@
     transition: 0.3s;
 }
 
+.login-page button:disabled,
+.register-page button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
 .login-page button:hover,
 .register-page button:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(0, 227, 150, 0.4);
+}
+
+.login-page .form-message,
+.register-page .form-message {
+    min-height: 22px;
+    margin-top: 14px;
+    text-align: center;
+    font-size: 0.95rem;
+}
+
+.login-page .form-message--error,
+.register-page .form-message--error {
+    color: #ff8383;
+}
+
+.login-page .form-message--success,
+.register-page .form-message--success {
+    color: var(--primary-accent);
 }
 
 .login-page .login-register-link,
@@ -84,6 +154,7 @@
         padding: 24px 18px;
         gap: 16px;
     }
+
 }
 
 @media (max-width: 400px) {
