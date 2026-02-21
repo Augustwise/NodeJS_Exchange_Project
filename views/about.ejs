@@ -4,10 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About — CurrencyChacker</title>
+    <title>About — CurrencyChecker</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="/styles/base.css">
     <link rel="stylesheet" href="/styles/about.css">
 </head>
@@ -16,29 +17,83 @@
 
     <%- include('partials/header') %>
 
-    <main class="about-main">
-        <h1>About</h1>
-        <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-            ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-            nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
-            anim id est laborum.
-        </p>
-        <p>
-            Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem
-            aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
-            Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni
-            dolores eos qui ratione voluptatem sequi nesciunt.
-        </p>
-        <p>
-            At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti
-            atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique
-            sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.
-        </p>
-    </main>
+    <div class="about-wrapper">
+
+        <div class="floating-coin coin-left">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 2v2 M11 19v2" />
+                <path d="M14 2v2 M14 19v2" />
+                
+                <path d="M9 5h4a3 3 0 0 1 0 6H9" />
+                <path d="M9 11h4a3.5 3.5 0 0 1 0 7H9" />
+                <path d="M9 5v13" />
+            </svg>
+        </div>
+
+        <div class="floating-coin coin-right">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 1v22" />
+                <path d="M17 7a5 5 0 0 0-10 0c0 4.5 10 5.5 10 10a5 5 0 0 1-10 0" />
+            </svg>
+        </div>
+
+        <main class="about-main">
+            <h1>Smart Currency Tracking</h1>
+            
+            <p>
+                In a world where exchange rates shift every second, financial awareness isn't just a trend—it's a necessity. <strong>CurrencyChecker</strong> was built to give you the exact numbers you need to make smart money decisions, without the bank jargon.
+            </p>
+            
+            <p>
+                Whether you're a freelancer getting paid in USD, a crypto enthusiast tracking market dips, or just trying to avoid crazy conversion fees on your next trip abroad, relying on outdated rates costs you money. We fix that.
+            </p>
+            
+            <p>
+                We pull real-time data through optimized networks and deliver it straight to your screen. No delayed servers, no hidden spreads—just clean, accurate data when you need it most.
+            </p>
+
+            <div class="about-stats">
+                <div class="stat-card">
+                    <h3 class="counter" data-target="150">0</h3><span>+</span>
+                    <span class="stat-label">Currencies</span>
+                </div>
+                <div class="stat-card">
+                    <h3 class="counter" data-target="24">0</h3><span>/7</span>
+                    <span class="stat-label">Live Updates</span>
+                </div>
+                <div class="stat-card">
+                    <h3 class="counter" data-target="100">0</h3><span>%</span>
+                    <span class="stat-label">Free to Use</span>
+                </div>
+            </div>
+        </main>
+    </div>
 
     <script src="/js/menu.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const counters = document.querySelectorAll('.counter');
+            const speed = 100; 
+
+            counters.forEach(counter => {
+                const updateCount = () => {
+                    const target = +counter.getAttribute('data-target');
+                    const count = +counter.innerText;
+                    const inc = target / speed;
+
+                    if (count < target) {
+                        counter.innerText = Math.ceil(count + inc);
+                        setTimeout(updateCount, 15);
+                    } else {
+                        counter.innerText = target;
+                    }
+                };
+
+                setTimeout(updateCount, 800); 
+            });
+        });
+    </script>
 </body>
 
 </html>
