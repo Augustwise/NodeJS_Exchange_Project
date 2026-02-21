@@ -170,6 +170,20 @@
     animation: fadeIn 0.4s ease;
 }
 
+:root {
+    --card-bg: rgba(30, 30, 30, 0.6);
+    --border-color: rgba(255, 255, 255, 0.1);
+    --text-main: #ffffff;
+    --text-muted: #a0a0a0;
+    --primary-accent: #00e396;
+}
+body { background: #121212; color: var(--text-main); font-family: sans-serif; }
+
+.add-form { display: flex; flex-direction: column; gap: 15px; max-width: 400px; }
+.add-form input { padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.2); color: var(--text-main); }
+.add-form button { padding: 12px; border-radius: 8px; border: none; background: var(--primary-accent); color: #000; font-weight: bold; cursor: pointer; transition: 0.3s; }
+.add-form button:hover { opacity: 0.8; }
+
 
 @media (max-width: 900px) {
     .crypto-page main {
