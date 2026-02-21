@@ -10,9 +10,11 @@ router.get('/',        pageController.home);
 router.get('/login',   pageController.loginPage);
 router.get('/register',pageController.registerPage);
 router.get('/account', pageController.accountPage);
-router.get('/crypt',   pageController.cryptPage);
-router.get('/create', pageController.addCrypto);
-router.post('/create', cryptoController.createCrypto);
+
+router.get('/crypt', cryptoController.showCryptPage);
+router.get('/create', pageController.addCrypto);      
+router.post('/create', cryptoController.createCrypto)
+
 router.get('/about',   pageController.aboutPage);
 router.get('/contact', pageController.contactPage);
 

@@ -40,7 +40,10 @@ function accountPage(req, res) {
 }
 
 function cryptPage(_req, res) {
-    res.render('crypt', { activePage: 'crypt' });
+    res.render('crypt', { 
+        activePage: 'crypt',
+        cryptos: cryptos 
+    });
 }
 
 function addCrypto(_req, res){

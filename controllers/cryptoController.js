@@ -1,9 +1,24 @@
-
 const cryptoModel = require('../models/cryptoModel'); 
+const dbPool = require('../db'); 
 
-async function createCrypto(req, res) {
+async function showCryptPage(req, res){
+    try {
+        const [cryptos] = await dbPool.query('SELECT * FROM Crypto ORDER BY id DESC');
+
+        res.render('crypt', { 
+            activePage: 'crypt',
+            cryptos: cryptos 
+        });
+    } catch (error) {
+        console.error("Помилка завантаження сторінки:", error);
+        res.status(500).send("Internal Server Error");
+    }
+}
+
+async function createCrypto(req, res){
     try {
         const { cryptoName } = req.body;
+        
         if (!req.currentUser) {
             return res.status(401).send("You must be logged in to add a crypto. <a href='/login'>Login</a>");
         }
@@ -29,4 +44,4 @@ async function createCrypto(req, res) {
     }
 }
 
-module.exports = {createCrypto};
+module.exports = {showCryptPage, createCrypto};
