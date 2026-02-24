@@ -28,13 +28,7 @@
                     <div class="chart-header-row">
                         <div class="chart-title-group">
                             <div class="select-wrapper">
-                                <select id="chartCurrencySelect" onchange="changeCurrency(this.value)">
-                                    <option value="USD">USD / UAH</option>
-                                    <option value="EUR">EUR / UAH</option>
-                                    <option value="GBP">GBP / UAH</option>
-                                    <option value="BTC">BTC / USD</option>
-                                </select>
-                                <span class="custom-arrow">▼</span>
+                                <div id="chartCurrencyLabel">USD / UAH</div>
                             </div>
 
                             <div class="price-info">
@@ -64,15 +58,10 @@
                     <div class="input-group">
                         <input type="number" id="amount-one" value="1" min="0"> 
                         <select class="currency-select" id="currency-one">
-                            <option value="UAH" selected>UAH</option>
-                            <option value="USD">USD</option>
-                            <option value="EUR">EUR</option>
-                            <option value="GBP">GBP</option>
-                            <option value="PLN">PLN</option>
-                            <option value="JPY">JPY</option>
-                            <option value="CNY">CNY</option>
-                            <option value="CAD">CAD</option>
-                            <option value="AUD">AUD</option>
+                            <% const keys = Object.keys(locals.rates || {}).sort();
+                               keys.forEach(function(k){ %>
+                                <option value="<%= k %>" <%= k === 'UAH' ? 'selected' : '' %>><%= k %></option>
+                            <% }); %>
                         </select>
                     </div>
 
@@ -81,15 +70,9 @@
                     <div class="input-group">
                         <input type="number" id="amount-two" value="0" min="0">
                         <select class="currency-select" id="currency-two">
-                            <option value="USD" selected>USD</option>
-                            <option value="UAH">UAH</option>
-                            <option value="EUR">EUR</option>
-                            <option value="GBP">GBP</option>
-                            <option value="PLN">PLN</option>
-                            <option value="JPY">JPY</option>
-                            <option value="CNY">CNY</option>
-                            <option value="CAD">CAD</option>
-                            <option value="AUD">AUD</option>
+                            <% keys.forEach(function(k){ %>
+                                <option value="<%= k %>" <%= k === 'USD' ? 'selected' : '' %>><%= k %></option>
+                            <% }); %>
                         </select>
                     </div>
                 </div>
