@@ -40,7 +40,14 @@ function accountPage(req, res) {
 }
 
 function cryptPage(_req, res) {
-    res.render('crypt', { activePage: 'crypt' });
+    res.render('crypt', { 
+        activePage: 'crypt',
+        cryptos: cryptos 
+    });
+}
+
+function addCrypto(_req, res){
+    res.render('create', {activePage: 'create'})
 }
 
 function aboutPage(_req, res) {
@@ -51,4 +58,4 @@ function contactPage(_req, res) {
     res.render('contact', { activePage: 'contact' });
 }
 
-module.exports = { home, loginPage, registerPage, accountPage, cryptPage, aboutPage, contactPage };
+module.exports = { home, loginPage, registerPage, accountPage, cryptPage, addCrypto, aboutPage, contactPage };

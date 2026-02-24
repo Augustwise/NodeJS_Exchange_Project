@@ -27,15 +27,82 @@
         <tv-ticker-tape symbols='FOREXCOM:SPXUSD,FOREXCOM:NSXUSD,FOREXCOM:DJI,FX:EURUSD,BITSTAMP:BTCUSD,BITSTAMP:ETHUSD' theme="dark"></tv-ticker-tape>
 
         <div id="users-crypto" class="tab-content">
-            <div class="stat-card" style="padding: 25px;">
-                <p style="color: var(--text-muted);">Users projects</p>
+            <div class="crypto-layout">
+                <div class="crypto-list">
+                    <% 
+                        let firstBtn = true; 
+                        let firstActiveChart = '';
+                        const chartTypes = ['btc', 'eth', 'sol', 'ada', 'bnb', 'xpr', 'ton', 'doge', 'pepe']; 
+                    %>
+                    
+                    <% if (typeof cryptos !== 'undefined' && cryptos.length > 0) { %>
+                        <% cryptos.forEach(function(coin) { %>
+                            <% if (coin.isApproved) { %>
+                                <% 
+                                    let randomChart = chartTypes[Math.floor(Math.random() * chartTypes.length)];
+                                    let targetId = randomChart;
+                                    if (firstBtn) { firstActiveChart = targetId; }
+                                %>
+                                
+                                <button class="coin-btn <%= firstBtn ? 'active' : '' %>" onclick="switchChart(event, '<%= targetId %>')">
+                                    <span class="coin-name"><%= coin.cryptoName %></span> 
+                                    <span class="coin-ticker"><%= coin.cryptoName.substring(0, 3).toUpperCase() %></span>
+                                </button>
+                                
+                                <% firstBtn = false; %>
+                            <% } %>
+                        <% }); %>
+                    <% } %>
+                    
+                    <% if (firstBtn) { %>
+                        <p style="color: var(--text-muted); text-align: center; padding: 20px;">No approved projects yet.</p>
+                    <% } %>
+                </div>
+        
+                <div class="chart-wrapper">
+                    <div id="btc" class="tv-chart <%= firstActiveChart === 'btc' ? 'active' : '' %>"></div>
+                    <div id="eth" class="tv-chart <%= firstActiveChart === 'eth' ? 'active' : '' %>"></div>
+                    <div id="sol" class="tv-chart <%= firstActiveChart === 'sol' ? 'active' : '' %>"></div>
+                    <div id="ada" class="tv-chart <%= firstActiveChart === 'ada' ? 'active' : '' %>"></div>
+                    <div id="bnb" class="tv-chart <%= firstActiveChart === 'bnb' ? 'active' : '' %>"></div>
+                    <div id="xpr" class="tv-chart <%= firstActiveChart === 'xpr' ? 'active' : '' %>"></div>
+                    <div id="ton" class="tv-chart <%= firstActiveChart === 'ton' ? 'active' : '' %>"></div>
+                    <div id="doge" class="tv-chart <%= firstActiveChart === 'doge' ? 'active' : '' %>"></div>
+                    <div id="pepe" class="tv-chart <%= firstActiveChart === 'pepe' ? 'active' : '' %>"></div>
+                </div>
+        
             </div>
         </div>
 
         <div id="my-crypto" class="tab-content">
-
             <% if (currentUser) { %>
-                <a href="/create" class="btn btn-primary">Create</a>
+                <a href="/create" class="btn btn-primary" style="margin-bottom: 20px; display: inline-block;">Create</a>
+                <div class="crypto-list">
+                    
+                    <% 
+                        let myCoins = cryptos ? cryptos.filter(coin => coin.creator == currentUser.id) : []; 
+                    %>
+        
+                    <% if (myCoins.length > 0) { %>
+                        
+                        <% myCoins.forEach(function(coin) { %>
+                            <div class="coin-btn">
+                                <span class="coin-name"><%= coin.cryptoName %></span>
+                                
+                                <span class="coin-ticker">
+                                    <% if (coin.isApproved) { %>
+                                        <span style="color: var(--primary-accent);">Approved</span>
+                                    <% } else { %>
+                                        <span style="color: var(--text-muted);">Pending</span>
+                                    <% } %>
+                                </span>
+                            </div>
+                        <% }); %>
+                
+                    <% } else { %>
+                        <p style="color: var(--text-muted); text-align: center;">You haven't added any cryptocurrencies yet.</p>
+                    <% } %>
+                </div>
             <% } else { %>
                 <div class="stat-card" style="padding: 25px;">
                     <p style="color: var(--text-muted);">You need to create an account first</p>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Crypto</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/base.css">
+    <link rel="stylesheet" href="/styles/crypto.css">
+</head>
+<body class="crypto-page">
+
+    <%- include('partials/header') %>
+
+    <main>
+        <div class="chart-wrapper">
+            <div class="stat-card" style="padding: 25px;">
+                <form action="/create" method="POST" class="add-form">
+                    <h3>Add a New Cryptocurrency</h3>
+                    <input type="text" name="cryptoName" placeholder="Name (e.g., Bitcoin)" required>
+                    <button type="submit">Add</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>
