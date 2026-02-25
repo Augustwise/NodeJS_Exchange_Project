@@ -13,6 +13,8 @@ require('dotenv').config();
 const app    = require('./app');
 const sequelize = require('./db');
 const { updateCurrencyRates } = require('./utils/currencyService');
+const { getHistoricalRates } = require('./utils/currencyService');
+
 
 const PORT = process.env.PORT || 3000;
 
