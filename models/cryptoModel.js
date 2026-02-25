@@ -1,18 +1,23 @@
-const dbPool = require('../db');
+const { Crypto } = require('./entities');
 
 async function cryptoExist(cryptoName) {
-    const [rows] = await dbPool.query(
-        'SELECT id FROM Crypto WHERE cryptoName = ? LIMIT 1',
-        [cryptoName.toLowerCase()]
-    );
-    return rows.length > 0;
+    const crypto = await Crypto.findOne({
+        where: { cryptoName: cryptoName.toLowerCase() },
+        attributes: ['id'],
+        raw: true
+    });
+    return Boolean(crypto);
 }
 
 async function create({cryptoName, creator, isApproved}) {
-    await dbPool.query(
-        'INSERT INTO Crypto (cryptoName, creator, isApproved) VALUES (?, ?, ?)',
-        [cryptoName, creator, isApproved]
-    );
+    await Crypto.create({ cryptoName, creator, isApproved });
 }
 
-module.exports = {cryptoExist, create};
+async function findAllNewest() {
+    return Crypto.findAll({
+        order: [['id', 'DESC']],
+        raw: true
+    });
+}
+
+module.exports = {cryptoExist, create, findAllNewest};

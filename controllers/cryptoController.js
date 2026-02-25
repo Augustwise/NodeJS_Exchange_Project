@@ -1,9 +1,8 @@
 const cryptoModel = require('../models/cryptoModel'); 
-const dbPool = require('../db'); 
 
 async function showCryptPage(req, res){
     try {
-        const [cryptos] = await dbPool.query('SELECT * FROM Crypto ORDER BY id DESC');
+        const cryptos = await cryptoModel.findAllNewest();
 
         res.render('crypt', { 
             activePage: 'crypt',

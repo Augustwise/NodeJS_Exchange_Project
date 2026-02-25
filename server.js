@@ -11,7 +11,7 @@
 require('dotenv').config();
 
 const app    = require('./app');
-const dbPool = require('./db');
+const sequelize = require('./db');
 const { updateCurrencyRates } = require('./utils/currencyService');
 
 const PORT = process.env.PORT || 3000;
@@ -23,9 +23,7 @@ async function startServer() {
 
     // Verify that the database is reachable before accepting traffic
     try {
-        const connection = await dbPool.getConnection();
-        await connection.ping();
-        connection.release();
+        await sequelize.authenticate();
         console.log('Database connection established.');
     } catch (error) {
         console.error('Database connection failed:', error.message);

@@ -1,17 +1,18 @@
 // models/userModel.js — all database queries related to the User table.
 
-const dbPool = require('../db');
+const { User } = require('./entities');
 
 /**
  * Finds a user by email address.
  * Returns the user object or null if not found.
  */
 async function findByEmail(email) {
-    const [rows] = await dbPool.query(
-        'SELECT id, name, surname, email, password FROM User WHERE email = ? LIMIT 1',
-        [email.toLowerCase()]
-    );
-    return rows[0] || null;
+    const user = await User.findOne({
+        where: { email: email.toLowerCase() },
+        attributes: ['id', 'name', 'surname', 'email', 'password'],
+        raw: true
+    });
+    return user || null;
 }
 
 /**
@@ -19,11 +20,23 @@ async function findByEmail(email) {
  * Returns true / false.
  */
 async function emailExists(email) {
-    const [rows] = await dbPool.query(
-        'SELECT id FROM User WHERE email = ? LIMIT 1',
-        [email.toLowerCase()]
-    );
-    return rows.length > 0;
+    const user = await User.findOne({
+        where: { email: email.toLowerCase() },
+        attributes: ['id'],
+        raw: true
+    });
+    return Boolean(user);
+}
+
+/**
+ * Loads current user data used by session middleware.
+ */
+async function findByIdForSession(userId) {
+    const user = await User.findByPk(userId, {
+        attributes: ['id', 'name', 'surname', 'date_of_birth', 'country', 'email'],
+        raw: true
+    });
+    return user || null;
 }
 
 /**
@@ -31,10 +44,14 @@ async function emailExists(email) {
  * `hashedPassword` must already be bcrypt-hashed before calling this.
  */
 async function create({ name, surname, dateOfBirth, country, email, hashedPassword }) {
-    await dbPool.query(
-        'INSERT INTO User (name, surname, date_of_birth, country, email, password) VALUES (?, ?, ?, ?, ?, ?)',
-        [name, surname, dateOfBirth, country, email.toLowerCase(), hashedPassword]
-    );
+    await User.create({
+        name,
+        surname,
+        date_of_birth: dateOfBirth,
+        country,
+        email: email.toLowerCase(),
+        password: hashedPassword
+    });
 }
 
-module.exports = { findByEmail, emailExists, create };
+module.exports = { findByEmail, emailExists, findByIdForSession, create };

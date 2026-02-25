@@ -1,20 +1,26 @@
-// db.js — creates and exports a MySQL connection pool.
-//
-// A "pool" keeps multiple database connections open so the app doesn't
-// have to open a new connection on every request (which is slow).
-// Other files import `dbPool` and call dbPool.query(...) to run SQL.
+// db.js — initializes and exports a Sequelize connection instance.
 
-const mysql = require('mysql2/promise');
+const { Sequelize } = require('sequelize');
 
-const dbPool = mysql.createPool({
-    host:     process.env.DB_HOST,
-    user:     process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    port:     process.env.DB_PORT || 3306,
-    database: process.env.DB_NAME,
-    waitForConnections: true,  // queue requests when all connections are busy
-    connectionLimit: 10,       // keep at most 10 open connections
-    ssl: { rejectUnauthorized: false }
-});
+const sequelize = new Sequelize(
+    process.env.DB_NAME,
+    process.env.DB_USER,
+    process.env.DB_PASSWORD,
+    {
+        host: process.env.DB_HOST,
+        port: Number(process.env.DB_PORT) || 3306,
+        dialect: 'mysql',
+        logging: false,
+        pool: {
+            max: 10,
+            min: 0,
+            acquire: 30000,
+            idle: 10000
+        },
+        dialectOptions: {
+            ssl: { rejectUnauthorized: false }
+        }
+    }
+);
 
-module.exports = dbPool;
+module.exports = sequelize;

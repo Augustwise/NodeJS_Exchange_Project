@@ -1,6 +1,6 @@
 // middleware/loadUser.js — attaches the logged-in user to every request.
 
-const dbPool = require('../db');
+const UserModel = require('../models/userModel');
 
 async function loadUser(req, res, next) {
     res.locals.currentUser = null;
@@ -12,23 +12,16 @@ async function loadUser(req, res, next) {
     }
 
     try {
-        const [users] = await dbPool.query(
-            `SELECT id, name, surname,
-                    DATE_FORMAT(date_of_birth, '%Y-%m-%d') AS date_of_birth,
-                    country, email
-             FROM User
-             WHERE id = ? LIMIT 1`,
-            [req.session.userId]
-        );
+        const user = await UserModel.findByIdForSession(req.session.userId);
 
-        if (users.length === 0) {
+        if (!user) {
             // User was deleted from DB — clear the stale session
             req.session.destroy();
             return next();
         }
 
-        req.currentUser        = users[0];
-        res.locals.currentUser = users[0];
+        req.currentUser        = user;
+        res.locals.currentUser = user;
     } catch (error) {
         console.error('Failed to load current user:', error);
     }
