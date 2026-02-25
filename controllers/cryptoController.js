@@ -22,7 +22,7 @@ async function createCrypto(req, res){
             return res.status(401).send("You must be logged in to add a crypto. <a href='/login'>Login</a>");
         }
 
-        const creator = req.currentUser.id; 
+        const creator = req.currentUser.id;
 
         const exists = await cryptoModel.cryptoExist(cryptoName);
         if (exists) {

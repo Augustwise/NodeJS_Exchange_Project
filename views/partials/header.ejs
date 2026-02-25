@@ -13,6 +13,9 @@
             <li><a href="/crypt"  class="<%= activePage === 'crypt'   ? 'active' : '' %>">Crypto</a></li>
             <li><a href="/about"  class="<%= activePage === 'about'   ? 'active' : '' %>">About</a></li>
             <li><a href="/contact" class="<%= activePage === 'contact' ? 'active' : '' %>">Contact</a></li>
+            <% if (currentUser && currentUser.isAdmin) { %>
+                <li><a href="/admin" class="<%= activePage === 'admin' || activePage === 'admin-users' ? 'active' : '' %>">Admin</a></li>
+            <% } %>
             <% if (currentUser) { %>
                 <li class="mobile-auth-item"><a href="/account" class="<%= activePage === 'account' ? 'active' : '' %>">Account</a></li>
             <% } else { %>
@@ -25,6 +28,9 @@
     </nav>
     <div class="logInButtons">
         <% if (currentUser) { %>
+            <% if (currentUser.isAdmin) { %>
+                <a href="/admin" class="btn btn-text">Admin</a>
+            <% } %>
             <a href="/account" class="btn btn-primary">Account</a>
         <% } else { %>
             <a href="/login" class="btn btn-text">Log In</a>

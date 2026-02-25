@@ -19,6 +19,14 @@ async function loadUser(req, res, next) {
             req.session.destroy();
             return next();
         }
+        let isAdmin = false;
+        try {
+            isAdmin = await UserModel.hasRole(user.id, 'Admin');
+        } catch (error) {
+            console.error('Failed to load user role:', error);
+        }
+
+        user.isAdmin = isAdmin;
 
         req.currentUser        = user;
         res.locals.currentUser = user;
