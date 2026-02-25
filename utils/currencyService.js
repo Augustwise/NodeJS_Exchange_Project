@@ -36,8 +36,9 @@ const currencyData = {
 };
 
 async function updateCurrencyRates() {
+    const url = 'https://bank.gov.ua/NBU_Exchange/exchange_site?json';
     try {
-        const response = await fetch('https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json');
+        const response = await fetch(url);
         const data = await response.json();
 
         currencyData.rates.UAH = 1;
@@ -67,11 +68,6 @@ async function getHistoricalRates(currencyCode, daysCount) {
     
     try {
         const response = await fetch(url);
-        
-        if (!response.ok) {
-            throw new Error(`Невдала відповідь від НБУ: ${response.status} ${response.statusText}`);
-        }
-
         const data = await response.json();
 
         const chartData = data.map(item => ({
