@@ -130,6 +130,16 @@
     font-size: 0.9rem;
 }
 
+.admin-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.admin-actions form {
+    margin: 0;
+}
+
 @media (max-width: 820px) {
     .admin-main {
         padding: 20px 12px;
@@ -178,6 +188,10 @@
         color: var(--text-muted);
         font-size: 0.8rem;
         margin-bottom: 3px;
+    }
+
+    .admin-actions {
+        justify-content: flex-start;
     }
 }
 
