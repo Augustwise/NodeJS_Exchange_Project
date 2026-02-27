@@ -326,3 +326,10 @@
         font-size: 1.35rem;
     }
 }
+
+#rate {
+    text-align: center;
+    margin: 10px 0;
+    color: #888;
+    font-size: 14px;
+}
