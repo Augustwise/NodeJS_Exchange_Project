@@ -22,9 +22,13 @@ router.get('/contact', pageController.contactPage);
 
 router.get('/admin', requireAdmin, adminController.adminHome);
 router.get('/admin/users', requireAdmin, adminController.usersPage);
+router.get('/admin/cryptos', requireAdmin, adminController.cryptosPage);
 router.post('/admin/users/:userId/grant-admin', requireAdmin, adminController.grantAdmin);
 router.post('/admin/users/:userId/revoke-admin', requireAdmin, adminController.revokeAdmin);
+router.post('/admin/cryptos/:cryptoId/approve', requireAdmin, adminController.approveCrypto);
+router.post('/admin/cryptos/:cryptoId/reject', requireAdmin, adminController.rejectCrypto);
 
 router.post('/logout', authController.logoutRedirect);
 
 module.exports = router;
+

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Crypto Moderation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/base.css">
+    <link rel="stylesheet" href="/styles/admin.css">
+</head>
+
+<body class="admin-cryptos-page">
+    <%- include('partials/header') %>
+
+    <main class="admin-main">
+        <section class="admin-card admin-users-card">
+            <div class="admin-users-top">
+                <div>
+                    <h1>Users Projects Moderation</h1>
+                    <p class="admin-subtitle">Approve currencies submitted by regular users.</p>
+                </div>
+                <a href="/admin" class="btn btn-text">Back to Admin</a>
+            </div>
+
+            <% if (feedback) { %>
+                <div class="admin-alert admin-alert-success"><%= feedback %></div>
+            <% } %>
+            <% if (error) { %>
+                <div class="admin-alert admin-alert-error"><%= error %></div>
+            <% } %>
+
+            <div class="admin-table-wrap">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Currency</th>
+                            <th>Created By</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (cryptos.length === 0) { %>
+                            <tr>
+                                <td data-label="Info" colspan="5">No pending currencies to approve.</td>
+                            </tr>
+                        <% } else { %>
+                            <% cryptos.forEach(function(crypto) { %>
+                                <tr>
+                                    <td data-label="ID"><%= crypto.id %></td>
+                                    <td data-label="Currency"><%= crypto.cryptoName %></td>
+                                    <td data-label="Created By">
+                                        <% if (crypto.author) { %>
+                                            <%= crypto.author.name %> <%= crypto.author.surname %> (<%= crypto.author.email %>)
+                                        <% } else { %>
+                                            User #<%= crypto.creator %>
+                                        <% } %>
+                                    </td>
+                                    <td data-label="Status">
+                                        <span class="role-pill role-default">Pending</span>
+                                    </td>
+                                    <td data-label="Action">
+                                        <div class="admin-actions">
+                                            <form action="/admin/cryptos/<%= crypto.id %>/approve" method="post">
+                                                <button type="submit" class="btn btn-primary">Approve</button>
+                                            </form>
+                                            <form action="/admin/cryptos/<%= crypto.id %>/reject" method="post">
+                                                <button type="submit" class="btn btn-danger">Reject</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script src="/js/menu.js"></script>
+</body>
+
+</html>
+
