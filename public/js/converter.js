@@ -28,16 +28,16 @@ function calculate(e) {
         targetRate = rate1;
     }
 
-    const amountInBase = sourceInput.value / sourceRate; 
-
-    targetInput.value = (amountInBase * targetRate).toFixed(2);
+    const amountInUAH = sourceInput.value * sourceRate; 
+    
+    targetInput.value = (amountInUAH / targetRate).toFixed(2);
 
     updateRateText(currency1, currency2, rate1, rate2);
 
 }
 
 function updateRateText(curr1, curr2, r1, r2) {
-    const singleRate = (1 / r1) * r2;
+    const singleRate = r1 / r2;
     rate.innerText = `1 ${curr1} = ${singleRate.toFixed(4)} ${curr2}`;
 }
 

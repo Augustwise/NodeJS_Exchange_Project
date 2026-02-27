@@ -45,7 +45,7 @@ async function updateCurrencyRates() {
 
         data.forEach(item => {
             if (item.cc && item.rate) {
-                currencyData.rates[item.cc] = 1 / item.rate;
+                currencyData.rates[item.cc] = item.rate;
             }
         });
         currencyData.lastUpdated = new Date();
@@ -72,7 +72,7 @@ async function getHistoricalRates(currencyCode, daysCount) {
 
         const chartData = data.map(item => ({
             date: item.exchangedate,
-            rate: 1 / item.rate 
+            rate: item.rate 
         }));
 
         return chartData;

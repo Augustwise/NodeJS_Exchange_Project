@@ -60,7 +60,7 @@
                         <select class="currency-select" id="currency-one">
                             <% const keys = Object.keys(locals.rates || {}).sort();
                                keys.forEach(function(k){ %>
-                                <option value="<%= k %>" <%= k === 'UAH' ? 'selected' : '' %>><%= k %></option>
+                                <option value="<%= k %>" <%= k === 'USD' ? 'selected' : '' %>><%= k %></option>
                             <% }); %>
                         </select>
                     </div>
@@ -71,7 +71,7 @@
                         <input type="number" id="amount-two" value="0" min="0">
                         <select class="currency-select" id="currency-two">
                             <% keys.forEach(function(k){ %>
-                                <option value="<%= k %>" <%= k === 'USD' ? 'selected' : '' %>><%= k %></option>
+                                <option value="<%= k %>" <%= k === 'UAH' ? 'selected' : '' %>><%= k %></option>
                             <% }); %>
                         </select>
                     </div>
@@ -82,24 +82,57 @@
         <div class="stats-row">
             <div class="stat-card">
                 <div class="stat-info">
-                    <img src="/images/Flag_of_Europe.webp" alt="">
+                    <img src="/images/Flag_of_the_United_States.svg" alt="USD Flag">
+                    <h3>USD</h3>
+                </div>
+                <div class="stat-value" id="widget-usd">
+                    <%= locals.rates && locals.rates['USD'] ? Number(locals.rates['USD']).toFixed(2) : 'N/A' %>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <img src="/images/Flag_of_Europe.svg" alt="EUR Flag">
                     <h3>EUR</h3>
                 </div>
-                <div class="stat-value">43.92</div>
+                <div class="stat-value" id="widget-eur">
+                    <%= locals.rates && locals.rates['EUR'] ? Number(locals.rates['EUR']).toFixed(2) : 'N/A' %>
+                </div>
             </div>
             <div class="stat-card">
                 <div class="stat-info">
-                    <img src="/images/Flag_UK.webp" alt="">
+                    <img src="/images/Flag_of_Japan.svg" alt="JPY Flag">
+                    <h3>JPY</h3>
+                </div>
+                <div class="stat-value" id="widget-jpy">
+                    <%= locals.rates && locals.rates['JPY'] ? Number(locals.rates['JPY']).toFixed(2) : 'N/A' %>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <img src="/images/Flag_of_the_UK.svg" alt="GBP Flag">
                     <h3>GBP</h3>
                 </div>
-                <div class="stat-value">52.18</div>
+                <div class="stat-value" id="widget-gbp">
+                    <%= locals.rates && locals.rates['GBP'] ? Number(locals.rates['GBP']).toFixed(2) : 'N/A' %>
+                </div>
             </div>
             <div class="stat-card">
                 <div class="stat-info">
-                    <img src="/images/Flag_China.svg" alt="">
+                    <img src="/images/Flag_of_Switzerland.svg" alt="CHF Flag">
                     <h3>CHF</h3>
                 </div>
-                <div class="stat-value">46.75</div>
+                <div class="stat-value" id="widget-chf">
+                    <%= locals.rates && locals.rates['CHF'] ? Number(locals.rates['CHF']).toFixed(2) : 'N/A' %>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <img src="/images/Flag_China.svg" alt="CNY Flag">
+                    <h3>CNY</h3>
+                </div>
+                <div class="stat-value" id="widget-cny">
+                    <%= locals.rates && locals.rates['CNY'] ? Number(locals.rates['CNY']).toFixed(2) : 'N/A' %>
+                </div>
             </div>
         </div>
     </main>
