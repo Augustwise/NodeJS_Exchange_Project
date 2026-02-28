@@ -2,14 +2,53 @@
 //
 // Each function here corresponds to one URL.
 
-const { currencyData } = require('../utils/currencyService');
+const { currencyData, getHistoricalRates } = require('../utils/currencyService');
 const { formatDate }   = require('../utils/dateUtils');
 
-function home(req, res) {
+async function home(req, res) {
+    // Fetch 30-day historical rates for every available currency (except UAH)
+    const history = {};
+    const rates = currencyData.rates || {};
+    
+    // Make sure we have rates before trying to fetch history
+    const rateKeys = Object.keys(rates);
+    if (rateKeys.length < 2) {
+        console.warn('⚠ No currency rates available yet, only returning empty rates');
+        return res.render('index', {
+            activePage:  'home',
+            rates:       rates,
+            lastUpdated: currencyData.lastUpdated,
+            history:     history
+        });
+    }
+
+    try {
+        const keys = rateKeys.filter(k => k && k !== 'UAH');
+        console.log(`✓ Fetching history for ${keys.length} currencies`);
+        
+        if (keys.length > 0) {
+            const settled = await Promise.allSettled(keys.map(k => getHistoricalRates(k, 30)));
+            let historyCount = 0;
+            keys.forEach((k, i) => {
+                if (settled[i] && settled[i].status === 'fulfilled') {
+                    history[k] = settled[i].value || [];
+                    if (history[k].length > 0) historyCount++;
+                } else {
+                    history[k] = [];
+                }
+            });
+            console.log(`✓ Got history for ${historyCount}/${keys.length} currencies`);
+        }
+    } catch (err) {
+        console.warn('✗ Failed to fetch historical rates:', err.message);
+    }
+
+    console.log(`✓ Rendering index with ${rateKeys.length} rates and ${Object.keys(history).length} histories`);
     res.render('index', {
         activePage:  'home',
-        rates:       currencyData.rates,
-        lastUpdated: currencyData.lastUpdated
+        rates:       rates,
+        lastUpdated: currencyData.lastUpdated,
+        history:     history
     });
 }
 
