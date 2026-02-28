@@ -1,156 +1,242 @@
-const canvas = document.getElementById('currencyChart');
-if (!canvas) {
-    console.warn('currencyChart canvas not found — chart initialization skipped');
-}
-const ctx = canvas && canvas.getContext('2d');
+(function initCurrencyChart() {
+    console.log('CHART: SERVER_HISTORY available:', !!window.SERVER_HISTORY, 'currencies:', Object.keys(window.SERVER_HISTORY || {}).length);
+    console.log('CHART: SERVER_RATES available:', !!window.SERVER_RATES, 'currencies:', Object.keys(window.SERVER_RATES || {}).length);
 
-const gradient = ctx.createLinearGradient(0, 0, 0, 300);
-gradient.addColorStop(0, 'rgba(0, 227, 150, 0.5)');
-gradient.addColorStop(1, 'rgba(0, 227, 150, 0.0)');
-
-// Build simple chart datasets from SERVER_RATES passed from the server.
-function pairRate(base, quote) {
-    if (!window.SERVER_RATES) return null;
-    const rBase = window.SERVER_RATES[base];
-    const rQuote = window.SERVER_RATES[quote];
-    if (rBase == null || rQuote == null) return null;
-    return rQuote / rBase;
-}
-
-function makeSeries(centerValue, points = 6) {
-    const out = [];
-    let v = centerValue;
-    for (let i = 0; i < points; i++) {
-        // small random walk around centerValue
-        const noise = (Math.random() - 0.5) * (centerValue * 0.005);
-        v = parseFloat((centerValue + noise).toFixed(4));
-        out.push(v);
-    }
-    return out;
-}
-
-const currencyData = {};
-
-['USD','EUR','GBP','BTC'].forEach((key) => {
-    // default quote currencies used on the page: USD/EUR/GBP -> UAH, BTC -> USD
-    const pair = key === 'BTC' ? { base: 'BTC', quote: 'USD' } : { base: key, quote: 'UAH' };
-    const rate = pairRate(pair.base, pair.quote);
-    const current = rate != null ? rate.toFixed(4) : '—';
-    const series = rate != null ? makeSeries(rate) : [];
-    currencyData[key] = {
-        current,
-        change: rate != null ? '+0.00%' : '—',
-        isPositive: true,
-        labels: ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00'],
-        data: series
-    };
-});
-
-const chartConfig = {
-    type: 'line',
-    data: {
-        labels: currencyData.USD.labels,
-        datasets: [{
-            label: 'Price',
-            data: currencyData.USD.data,
-            borderColor: '#00E396',
-            backgroundColor: gradient,
-            borderWidth: 3,
-            pointRadius: 0,
-            pointHoverRadius: 6,
-            fill: true,
-            tension: 0.4
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
-        scales: {
-            x: { grid: { display: false }, ticks: { color: '#8B9BB4' } },
-            y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#8B9BB4' } }
-        },
-        interaction: { mode: 'index', intersect: false }
-    }
-};
-
-if (!ctx) {
-    // Stop further chart logic if canvas/context is missing
-    console.warn('Chart context not available, aborting chart setup');
-} else {
-    const myChart = new Chart(ctx, chartConfig);
-
-    function changeCurrency(currencyKey) {
-        // Deprecated: chart is now pair-driven. Keep function to avoid errors from inline handlers.
-        console.warn('changeCurrency(key) is deprecated; use converter selects to change the chart.');
+    function pairRate(base, quote) {
+        if (!window.SERVER_RATES) return null;
+        const rBase = window.SERVER_RATES[base];
+        const rQuote = window.SERVER_RATES[quote];
+        if (rBase == null || rQuote == null) return null;
+        // SERVER_RATES values are in UAH per 1 unit of currency (UAH per USD, etc.).
+        // To compute how many QUOTE units equal 1 BASE unit: (UAH per BASE) / (UAH per QUOTE).
+        return rBase / rQuote;
     }
 
-    function updateTimePeriod(period) {
-        document.querySelectorAll('.time-btn').forEach((btn) => btn.classList.remove('active'));
-        const btn = Array.from(document.querySelectorAll('.time-btn')).find(b => b.textContent.trim() === period);
-        if (btn) btn.classList.add('active');
+    function makeSeries(centerValue, points = 6) {
+        const out = [];
+        let v = centerValue;
+        for (let i = 0; i < points; i++) {
+            const noise = (Math.random() - 0.5) * (centerValue * 0.005);
+            v = parseFloat((centerValue + noise).toFixed(2));
+            out.push(v);
+        }
+        return out;
     }
 
-    window.changeCurrency = changeCurrency;
-    window.updateTimePeriod = updateTimePeriod;
+    function init() {
+        const canvas = document.getElementById('currencyChart');
+        if (!canvas) {
+            console.warn('currencyChart canvas not found — chart initialization skipped');
+            return;
+        }
 
-    // Bind converter selects so chart follows the chosen currency (no separate chart select).
-    try {
-        const convCurrencyOne = document.getElementById('currency-one');
-        const convCurrencyTwo = document.getElementById('currency-two');
-        const chartLabel = document.getElementById('chartCurrencyLabel');
+        const ctx = canvas.getContext && canvas.getContext('2d');
+        if (!ctx) {
+            console.warn('Chart context not available, aborting chart setup');
+            return;
+        }
 
-        function updateChartForPair(base, quote) {
-            // Display: 1 BASE = X QUOTE, header shows "BASE / QUOTE"
-            if (!base || !quote) return;
-            if (chartLabel) chartLabel.innerText = base + ' / ' + quote;
+        let gradient = null;
+        try {
+            gradient = ctx.createLinearGradient(0, 0, 0, 300);
+            gradient.addColorStop(0, 'rgba(0, 227, 150, 0.5)');
+            gradient.addColorStop(1, 'rgba(0, 227, 150, 0.0)');
+        } catch (e) {
+            console.warn('Unable to create canvas gradient, using transparent fallback', e);
+            gradient = 'transparent';
+        }
 
-            let rate = pairRate(base, quote); // returns quote per base
-            // fallback: try inverse if direct pair missing
-            if ((rate == null || !isFinite(rate)) && base && quote) {
-                const inv = pairRate(quote, base);
-                if (inv != null && isFinite(inv) && inv !== 0) {
-                    rate = 1 / inv;
+        // build some simple datasets
+        const currencyData = {};
+        ['USD', 'EUR', 'GBP', 'BTC'].forEach((key) => {
+            const pair = key === 'BTC' ? { base: 'BTC', quote: 'USD' } : { base: key, quote: 'UAH' };
+            const rate = pairRate(pair.base, pair.quote);
+            const current = rate != null ? rate.toFixed(2) : '—';
+            const series = rate != null ? makeSeries(rate) : [];
+            currencyData[key] = {
+                current,
+                change: rate != null ? '+0.00%' : '—',
+                isPositive: true,
+                labels: ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00'],
+                data: series
+            };
+        });
+
+        const chartConfig = {
+            type: 'line',
+            data: {
+                labels: currencyData.USD.labels,
+                datasets: [{
+                    label: 'Price',
+                    data: currencyData.USD.data,
+                    borderColor: '#00E396',
+                    backgroundColor: gradient || 'transparent',
+                    borderWidth: 3,
+                    pointRadius: 0,
+                    pointHoverRadius: 6,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { display: false }, ticks: { color: '#8B9BB4' } },
+                    y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#8B9BB4' } }
+                },
+                interaction: { mode: 'index', intersect: false }
+            }
+        };
+
+        if (typeof Chart === 'undefined') {
+            console.warn('Chart.js not found on page — ensure CDN is loaded');
+            return;
+        }
+
+        // Chart can accept canvas or context
+        const myChart = new Chart(canvas, chartConfig);
+        console.log('Chart initialized. SERVER_HISTORY keys:', Object.keys(window.SERVER_HISTORY || {}));
+        if (window.SERVER_HISTORY && window.SERVER_HISTORY.USD) {
+            console.log('Sample USD history records:', (window.SERVER_HISTORY.USD || []).slice(0, 3));
+        }
+
+
+        function changeCurrency(currencyKey) {
+            console.warn('changeCurrency(key) is deprecated; use converter selects to change the chart.');
+        }
+
+        // current displayed time period (1D, 1W, 1M)
+        let currentPeriod = '1D';
+        function updateTimePeriod(period) {
+            document.querySelectorAll('.time-btn').forEach((btn) => btn.classList.remove('active'));
+            const btn = Array.from(document.querySelectorAll('.time-btn')).find(b => b.textContent.trim() === period);
+            if (btn) btn.classList.add('active');
+            currentPeriod = period;
+            // refresh chart to reflect the new period
+            try { if (typeof syncChartToConverter === 'function') syncChartToConverter(); } catch (e) { console.warn('Failed to refresh chart after period change', e); }
+        }
+
+        window.changeCurrency = changeCurrency;
+        window.updateTimePeriod = updateTimePeriod;
+
+        try {
+            const convCurrencyOne = document.getElementById('currency-one');
+            const convCurrencyTwo = document.getElementById('currency-two');
+            const chartLabel = document.getElementById('chartCurrencyLabel');
+
+            function updateChartForPair(base, quote) {
+                if (!base || !quote) return;
+                console.log(`updateChartForPair: ${base} / ${quote}`);
+                if (chartLabel) chartLabel.innerText = base + ' / ' + quote;
+
+                let rate = pairRate(base, quote);
+                if ((rate == null || !isFinite(rate)) && base && quote) {
+                    const inv = pairRate(quote, base);
+                    if (inv != null && isFinite(inv) && inv !== 0) {
+                        rate = 1 / inv;
+                    }
                 }
-            }
-            const currentElem = document.getElementById('currentRate');
-            const changeElem = document.getElementById('rateChange');
 
-            if (rate == null || !isFinite(rate)) {
-                if (currentElem) currentElem.innerText = '—';
-                if (changeElem) changeElem.innerHTML = '— <span class="time-label">(today)</span>';
-                myChart.data.labels = [];
-                myChart.data.datasets[0].data = [];
+                const currentElem = document.getElementById('currentRate');
+                const changeElem = document.getElementById('rateChange');
+
+                if (rate == null || !isFinite(rate)) {
+                    if (currentElem) currentElem.innerText = '—';
+                    if (changeElem) changeElem.innerHTML = '— <span class="time-label">(today)</span>';
+                    myChart.data.labels = [];
+                    myChart.data.datasets[0].data = [];
+                    myChart.update();
+                    return;
+                }
+
+                    if (currentElem) currentElem.innerText = rate.toFixed(2);
+                if (changeElem) changeElem.innerHTML = `+0.00% <span class="time-label">(today)</span>`;
+                changeElem.className = 'rate-change positive';
+
+                let series = [];
+                let labels = ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00'];
+
+                try {
+                    const hist = window.SERVER_HISTORY || {};
+                    const baseHist = hist[base] || null;
+                    const quoteHist = hist[quote] || null;
+
+                    if (quote === 'UAH' && baseHist && baseHist.length > 0) {
+                        labels = baseHist.map(d => d.date);
+                        series = baseHist.map(d => parseFloat(Number(d.rate).toFixed(2)));
+                    } else if (baseHist && quoteHist && baseHist.length > 0 && quoteHist.length > 0) {
+                        const qByDate = new Map(quoteHist.map(d => [d.date, d.rate]));
+                        const aligned = baseHist.filter(d => qByDate.has(d.date));
+                        labels = aligned.map(d => d.date);
+                        series = aligned.map(d => {
+                            const qb = qByDate.get(d.date);
+                            const val = (d.rate && qb) ? (d.rate / qb) : null;
+                            return val != null && isFinite(val) ? parseFloat(Number(val).toFixed(2)) : null;
+                        }).filter(v => v != null);
+                    } else {
+                        series = makeSeries(rate);
+                    }
+                } catch (e) {
+                    series = makeSeries(rate);
+                }
+
+                // Respect selected time period (1D, 1W, 1M)
+                try {
+                    const periodMap = { '1D': 1, '1W': 7, '1M': 30 };
+                    const minPoints = { '1D': 3, '1W': 7, '1M': 30 };
+                    const desired = periodMap[currentPeriod] || series.length;
+                    const minimum = minPoints[currentPeriod] || 1;
+
+                    if (series.length > desired) {
+                        series = series.slice(series.length - desired);
+                        labels = labels.slice(labels.length - desired);
+                    }
+
+                    // If the result is too short for good visualization (e.g. 1 point for 1D), pad or synthesize
+                    if (currentPeriod === '1D' && series.length < minimum) {
+                        const lastVal = series.length ? series[series.length - 1] : (typeof rate === 'number' ? rate : null);
+                        if (lastVal != null && isFinite(lastVal)) {
+                            // Build a tiny 3-point series around the last value so the chart shows a curve
+                            const p1 = parseFloat((lastVal * 0.997).toFixed(4));
+                            const p2 = parseFloat((lastVal * 0.999).toFixed(4));
+                            const p3 = parseFloat((lastVal * 1.001).toFixed(4));
+                            series = [p1, p2, lastVal, p3];
+                            // reuse last label for simplicity or create placeholder dates
+                            const lastLabel = labels.length ? labels[labels.length - 1] : '';
+                            labels = [lastLabel, lastLabel, lastLabel, lastLabel];
+                        }
+                    }
+                } catch (e) {
+                    // ignore and show full series
+                }
+
+                myChart.data.labels = labels;
+                myChart.data.datasets[0].data = series;
                 myChart.update();
-                return;
             }
 
-            if (currentElem) currentElem.innerText = rate.toFixed(4);
-            if (changeElem) changeElem.innerHTML = `+0.00% <span class="time-label">(today)</span>`;
-            changeElem.className = 'rate-change positive';
+            function syncChartToConverter() {
+                const c1 = convCurrencyOne && convCurrencyOne.value;
+                const c2 = convCurrencyTwo && convCurrencyTwo.value;
+                updateChartForPair(c1, c2);
+            }
 
-            const series = makeSeries(rate);
-            myChart.data.labels = ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00'];
-            myChart.data.datasets[0].data = series;
-            myChart.update();
+            if (convCurrencyOne) convCurrencyOne.addEventListener('change', syncChartToConverter);
+            if (convCurrencyTwo) convCurrencyTwo.addEventListener('change', syncChartToConverter);
+
+            // initialize from current selects
+            syncChartToConverter();
+        } catch (err) {
+            console.warn('Chart binding to converter failed', err);
         }
-
-        function syncChartToConverter() {
-            const c1 = convCurrencyOne && convCurrencyOne.value; // left input
-            const c2 = convCurrencyTwo && convCurrencyTwo.value; // right input
-            // Show pair as: base = c1, quote = c2 (header: "C1 / C2", value = 1 C1 = X C2)
-            const base = c1;
-            const quote = c2;
-            updateChartForPair(base, quote);
-        }
-
-        if (convCurrencyOne) convCurrencyOne.addEventListener('change', syncChartToConverter);
-        if (convCurrencyTwo) convCurrencyTwo.addEventListener('change', syncChartToConverter);
-
-        // initialize from current selects
-        syncChartToConverter();
-    } catch (err) {
-        console.warn('Chart binding to converter failed', err);
     }
-}
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+})();
 

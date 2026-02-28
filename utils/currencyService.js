@@ -3,6 +3,8 @@
  * @module currencyService
  */
 
+const https = require('https');
+
 /**
  * Object containing current currency exchange rates and metadata.
  * @typedef {Object} CurrencyData
@@ -37,53 +39,69 @@ const currencyData = {
 
 async function updateCurrencyRates() {
     const url = 'https://bank.gov.ua/NBU_Exchange/exchange_site?json';
-    try {
-        const response = await fetch(url);
-        const data = await response.json();
-
-        currencyData.rates.UAH = 1;
-
-        data.forEach(item => {
-            if (item.cc && item.rate) {
-                currencyData.rates[item.cc] = item.rate;
-            }
+    
+    return new Promise((resolve) => {
+        https.get(url, (res) => {
+            let data = '';
+            res.on('data', chunk => { data += chunk; });
+            res.on('end', () => {
+                try {
+                    const jsonData = JSON.parse(data);
+                    currencyData.rates.UAH = 1;
+                    jsonData.forEach(item => {
+                        if (item.cc && item.rate) {
+                            currencyData.rates[item.cc] = item.rate;
+                        }
+                    });
+                    currencyData.lastUpdated = new Date();
+                    console.log(`[${currencyData.lastUpdated.toLocaleTimeString()}] SUCCESS:`, Object.keys(currencyData.rates).length, 'currencies loaded');
+                    resolve();
+                } catch (e) {
+                    console.error('Error parsing currency rates:', e.message);
+                    resolve();
+                }
+            });
+        }).on('error', (error) => {
+            console.error('Error fetching currency rates:', error.message);
+            resolve();
         });
-        currencyData.lastUpdated = new Date();
-        console.log(`[${currencyData.lastUpdated.toLocaleTimeString()}] SUCCESS:`, currencyData.rates);
-    } catch (error) {
-        console.error('Error fetching currency rates:', error);
-    }
+    });
 }
 
 async function getHistoricalRates(currencyCode, daysCount) {
     const endDate = new Date();
     const startDate = new Date(endDate);
-    startDate.setDate(endDate.getDate() - daysCount); 
+    startDate.setDate(endDate.getDate() - daysCount);
 
     const formatDate = (date) => date.toISOString().slice(0, 10).replace(/-/g, '');
     const startStr = formatDate(startDate);
     const endStr = formatDate(endDate);
 
     const url = `https://bank.gov.ua/NBU_Exchange/exchange_site?start=${startStr}&end=${endStr}&valcode=${currencyCode.toLowerCase()}&sort=exchangedate&order=asc&json`;
-    
-    try {
-        const response = await fetch(url);
-        const data = await response.json();
 
-        const chartData = data.map(item => ({
-            date: item.exchangedate,
-            rate: item.rate 
-        }));
-
-        return chartData;
-        
-    } catch (error) {
-        console.error(`Error fetching historical rates for ${currencyCode}:`, error);
-        return [];
-    }
+    return new Promise((resolve) => {
+        https.get(url, (res) => {
+            let data = '';
+            res.on('data', chunk => { data += chunk; });
+            res.on('end', () => {
+                try {
+                    const jsonData = JSON.parse(data);
+                    const chartData = jsonData.map(item => ({
+                        date: item.exchangedate,
+                        rate: item.rate
+                    }));
+                    console.log(`${currencyCode}: ${chartData.length} records fetched`);
+                    resolve(chartData);
+                } catch (e) {
+                    console.error(`${currencyCode}: Parse error`, e.message);
+                    resolve([]);
+                }
+            });
+        }).on('error', (error) => {
+            console.error(`${currencyCode}: Network error`, error.message);
+            resolve([]);
+        });
+    });
 }
-
-
-getHistoricalRates('USD', 30).then(console.log);
 
 module.exports = { currencyData, updateCurrencyRates, getHistoricalRates }; 
