@@ -25,7 +25,13 @@
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" name="password" autocomplete="current-password" required>
+                <div class="input-with-password-toggle">
+                    <input type="password" id="password" name="password" autocomplete="current-password" required>
+                    <button type="button" class="password-toggle" aria-label="Toggle password visibility" data-target="password">
+                        <img src="/images/show_password.svg" alt="" class="icon-show">
+                        <img src="/images/hide_password.svg" alt="" class="icon-hide">
+                    </button>
+                </div>
             </div>
             <button type="submit">Login</button>
         </form>
