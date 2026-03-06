@@ -31,6 +31,9 @@ http://localhost:3000
 - `GET /crypt` — cryptocurrency listing page
 - `GET /create` — form for submitting a new cryptocurrency
 - `POST /create` — submit a new cryptocurrency for approval
+- `GET /crypto/:id/edit` — form for editing a cryptocurrency created by the current user
+- `POST /crypto/:id/edit` — update a cryptocurrency created by the current user
+- `POST /crypto/:id/delete` — delete a cryptocurrency created by the current user
 - `GET /about` — about page
 - `GET /contact` — contact page
 - `POST /logout` — log out the current user and redirect to `/login`
