@@ -3,7 +3,6 @@ const cryptoModel = require('../models/cryptoModel');
 async function showCryptPage(req, res){
     try {
         const cryptos = await cryptoModel.findAllNewest();
-
         res.render('crypt', { 
             activePage: 'crypt',
             cryptos: cryptos 
@@ -43,4 +42,77 @@ async function createCrypto(req, res){
     }
 }
 
-module.exports = {showCryptPage, createCrypto};
+async function showEditPage(req, res) {
+    try {
+        if (!req.currentUser) return res.status(401).redirect('/login');
+
+        const coinId = req.params.id;
+        const coin = await cryptoModel.findById(coinId); 
+
+        if (!coin) {
+            return res.status(404).send("Cryptocurrency not found");
+        }
+
+        if (coin.creator !== req.currentUser.id) {
+            return res.status(403).send("You don't have permission to edit this coin.");
+        }
+
+        res.render('editCrypto', { 
+            activePage: 'crypt',
+            crypto: coin 
+        });
+    } catch (error) {
+        console.error("Помилка завантаження сторінки редагування:", error);
+        res.status(500).send("Internal Server Error");
+    }
+}
+
+async function updateCrypto(req, res) {
+    try {
+        if (!req.currentUser) return res.status(401).redirect('/login');
+
+        const coinId = req.params.id;
+        const { cryptoName } = req.body;
+        
+        const coin = await cryptoModel.findById(coinId);
+
+        if (!coin || coin.creator !== req.currentUser.id) {
+            return res.status(403).send("Permission denied or coin not found.");
+        }
+
+        await cryptoModel.updateById(coinId, { cryptoName: cryptoName });
+
+        res.redirect('/crypt');
+    } catch (error) {
+        console.error("Помилка оновлення крипти:", error);
+        res.status(500).send("Internal Server Error");
+    }
+}
+
+async function deleteCrypto(req, res) {
+    try {
+        if (!req.currentUser) return res.status(401).redirect('/login');
+
+        const coinId = req.params.id;
+        const coin = await cryptoModel.findById(coinId);
+
+        if (!coin || coin.creator !== req.currentUser.id) {
+            return res.status(403).send("Permission denied or coin not found.");
+        }
+
+        await cryptoModel.deleteById(coinId);
+
+        res.redirect('/crypt');
+    } catch (error) {
+        console.error("Помилка видалення крипти:", error);
+        res.status(500).send("Internal Server Error");
+    }
+}
+
+module.exports = {
+    showCryptPage, 
+    createCrypto, 
+    showEditPage, 
+    updateCrypto, 
+    deleteCrypto
+};

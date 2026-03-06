@@ -79,23 +79,32 @@
                 <a href="/create" class="btn btn-primary" style="margin-bottom: 20px; display: inline-block;">Create</a>
                 <div class="crypto-list">
                     
-                    <% 
-                        let myCoins = cryptos ? cryptos.filter(coin => coin.creator == currentUser.id) : []; 
-                    %>
+                    <% let myCoins = cryptos ? cryptos.filter(coin => coin.creator == currentUser.id) : []; %>
         
                     <% if (myCoins.length > 0) { %>
                         
                         <% myCoins.forEach(function(coin) { %>
-                            <div class="coin-btn">
-                                <span class="coin-name"><%= coin.cryptoName %></span>
+                            <div class="coin-btn" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px;">
                                 
-                                <span class="coin-ticker">
-                                    <% if (coin.isApproved) { %>
-                                        <span style="color: var(--primary-accent);">Approved</span>
-                                    <% } else { %>
-                                        <span style="color: var(--text-muted);">Pending</span>
-                                    <% } %>
-                                </span>
+                                <div class="coin-info">
+                                    <span class="coin-name" style="font-weight: bold; margin-right: 10px;"><%= coin.cryptoName %></span>
+                                    <span class="coin-ticker">
+                                        <% if (coin.isApproved) { %>
+                                            <span style="color: var(--primary-accent);">Approved</span>
+                                        <% } else { %>
+                                            <span style="color: var(--text-muted);">Pending</span>
+                                        <% } %>
+                                    </span>
+                                </div>
+        
+                                <div class="coin-actions">
+                                    <a href="/crypto/<%= coin.id %>/edit" class="btn" style="background-color: #f0ad4e; color: white; padding: 5px 10px; text-decoration: none; border-radius: 4px; margin-right: 5px;">Edit</a>
+                                    
+                                    <form action="/crypto/<%= coin.id %>/delete" method="POST" style="display: inline-block; margin: 0;">
+                                        <button type="submit" class="btn" style="background-color: #d9534f; color: white; padding: 5px 10px; border: none; border-radius: 4px; cursor: pointer;">Delete</button>
+                                    </form>
+                                </div>
+        
                             </div>
                         <% }); %>
                 

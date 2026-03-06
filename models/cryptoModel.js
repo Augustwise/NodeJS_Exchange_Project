@@ -13,6 +13,20 @@ async function create({cryptoName, creator, isApproved}) {
     await Crypto.create({ cryptoName, creator, isApproved });
 }
 
+async function updateById(cryptoId, updateData) {
+    const [updatedRows] = await Crypto.update(
+        updateData,
+        { where: { id: cryptoId } }
+    );
+    return updatedRows;
+}
+
+async function deleteById(cryptoId) {
+    return Crypto.destroy({
+        where: { id: cryptoId }
+    });
+}
+
 async function findAllNewest() {
     return Crypto.findAll({
         order: [['id', 'DESC']],
@@ -68,6 +82,8 @@ module.exports = {
     findPendingForAdminPanel,
     findById,
     approveById,
-    rejectById
+    rejectById,
+    updateById,
+    deleteById
 };
 

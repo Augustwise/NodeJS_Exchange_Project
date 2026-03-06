@@ -16,6 +16,9 @@ router.get('/account', pageController.accountPage);
 router.get('/crypt', cryptoController.showCryptPage);
 router.get('/create', pageController.addCrypto);      
 router.post('/create', cryptoController.createCrypto)
+router.get('/crypto/:id/edit', cryptoController.showEditPage);
+router.post('/crypto/:id/edit', cryptoController.updateCrypto); 
+router.post('/crypto/:id/delete', cryptoController.deleteCrypto);
 
 router.get('/about',   pageController.aboutPage);
 router.get('/contact', pageController.contactPage);
