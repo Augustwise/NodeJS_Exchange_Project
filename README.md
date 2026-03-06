@@ -8,6 +8,29 @@
 npm i
 ```
 
+## Configuration
+
+Create a `.env` file in the project root before starting the server.
+
+Example:
+
+```env
+PORT=3000
+AUTH_SECRET=your-session-secret
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=your_database_name
+DB_USER=your_database_user
+DB_PASSWORD=your_database_password
+```
+
+Notes:
+
+- The app uses MySQL through Sequelize, so the database must exist and be reachable with the credentials above.
+- `PORT` is optional. If it is not set, the server starts on `3000`.
+- `AUTH_SECRET` is used to sign session cookies. If it is not set, the app falls back to a development-only default value.
+- Exchange rates and historical data are fetched from the National Bank of Ukraine API during startup and refreshed while the server is running.
+
 2. Start the server:
 
 ```bash
