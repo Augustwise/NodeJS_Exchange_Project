@@ -151,10 +151,6 @@
                     return;
                 }
 
-                    if (currentElem) currentElem.innerText = rate.toFixed(2);
-                if (changeElem) changeElem.innerHTML = `+0.00% <span class="time-label">(today)</span>`;
-                changeElem.className = 'rate-change positive';
-
                 let series = [];
                 let labels = ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00'];
 
@@ -210,6 +206,48 @@
                     }
                 } catch (e) {
                     // ignore and show full series
+                }
+
+                if (series.length > 0) {
+                    series[series.length - 1] = parseFloat(rate.toFixed(2));
+                }
+
+                let changePercent = 0;
+
+                const hist = window.SERVER_HISTORY || {};
+                const baseHist = hist[base] || [];
+                const quoteHist = hist[quote] || [];
+
+                if (baseHist.length > 0) {
+
+                    let startRate = null;
+
+                    const firstBase = baseHist[baseHist.length - 1];
+
+                    if (quote === 'UAH') {
+                        startRate = firstBase.rate;
+                    } else if (quoteHist.length) {
+
+                        const qByDate = new Map(quoteHist.map(d => [d.date, d.rate]));
+                        const qRate = qByDate.get(firstBase.date);
+
+                        if (qRate) {
+                            startRate = firstBase.rate / qRate;
+                        }
+                    }
+
+                    if (startRate) {
+                        changePercent = ((rate - startRate) / startRate) * 100;
+                    }
+                }
+
+                const sign = changePercent >= 0 ? '+' : '';
+
+                if (currentElem) currentElem.innerText = rate.toFixed(2);
+
+                if (changeElem) {
+                    changeElem.innerHTML = `${sign}${changePercent.toFixed(2)}% <span class="time-label">(today)</span>`;
+                    changeElem.className = changePercent >= 0 ? 'rate-change positive' : 'rate-change negative';
                 }
 
                 myChart.data.labels = labels;
