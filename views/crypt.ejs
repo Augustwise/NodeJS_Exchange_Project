@@ -17,6 +17,25 @@
 
     <%- include('partials/header') %>
 
+    <%
+        const chartOptions = [
+            { symbol: 'BINANCE:BTCUSDT' },
+            { symbol: 'BINANCE:ETHUSDT' },
+            { symbol: 'BINANCE:SOLUSDT' },
+            { symbol: 'BINANCE:ADAUSDT' },
+            { symbol: 'BINANCE:BNBUSDT' },
+            { symbol: 'BINANCE:XRPUSDT' },
+            { symbol: 'BINANCE:TONUSDT' },
+            { symbol: 'BINANCE:DOGEUSDT' },
+            { symbol: 'BINANCE:PEPEUSDT' }
+        ];
+        const approvedCharts = (cryptos || [])
+            .filter((coin) => coin.isApproved)
+            .map((coin, index) => ({ coin, chart: chartOptions[index % chartOptions.length] }));
+        const currentUserId = currentUser ? currentUser.id : null;
+        const myCoins = cryptos ? cryptos.filter((coin) => coin.creator == currentUserId) : [];
+    %>
+
     <main>        
         <div class="tabs-header">
             <button class="tab-btn active" onclick="switchMainTab(event, 'public-crypto')">Public Projects</button>
@@ -29,47 +48,27 @@
         <div id="users-crypto" class="tab-content">
             <div class="crypto-layout">
                 <div class="crypto-list">
-                    <% 
-                        let firstBtn = true; 
-                        let firstActiveChart = '';
-                        const chartTypes = ['btc', 'eth', 'sol', 'ada', 'bnb', 'xpr', 'ton', 'doge', 'pepe']; 
-                    %>
-                    
-                    <% if (typeof cryptos !== 'undefined' && cryptos.length > 0) { %>
-                        <% cryptos.forEach(function(coin) { %>
-                            <% if (coin.isApproved) { %>
-                                <% 
-                                    let randomChart = chartTypes[Math.floor(Math.random() * chartTypes.length)];
-                                    let targetId = randomChart;
-                                    if (firstBtn) { firstActiveChart = targetId; }
-                                %>
-                                
-                                <button class="coin-btn <%= firstBtn ? 'active' : '' %>" onclick="switchChart(event, '<%= targetId %>')">
-                                    <span class="coin-name"><%= coin.cryptoName %></span> 
-                                    <span class="coin-ticker"><%= coin.cryptoName.substring(0, 3).toUpperCase() %></span>
-                                </button>
-                                
-                                <% firstBtn = false; %>
-                            <% } %>
+                    <% if (approvedCharts.length > 0) { %>
+                        <% approvedCharts.forEach(function(entry, index) { %>
+                            <button
+                                class="coin-btn <%= index === 0 ? 'active' : '' %>"
+                                data-chart-container="users-chart"
+                                data-symbol="<%= entry.chart.symbol %>"
+                                onclick="switchChart(event)">
+                                <span class="coin-name"><%= entry.coin.cryptoName %></span>
+                                <span class="coin-ticker"><%= entry.coin.cryptoName.substring(0, 3).toUpperCase() %></span>
+                            </button>
                         <% }); %>
-                    <% } %>
-                    
-                    <% if (firstBtn) { %>
+                    <% } else { %>
                         <p style="color: var(--text-muted); text-align: center; padding: 20px;">No approved projects yet.</p>
                     <% } %>
                 </div>
         
-                <div class="chart-wrapper">
-                    <div id="btc" class="tv-chart <%= firstActiveChart === 'btc' ? 'active' : '' %>"></div>
-                    <div id="eth" class="tv-chart <%= firstActiveChart === 'eth' ? 'active' : '' %>"></div>
-                    <div id="sol" class="tv-chart <%= firstActiveChart === 'sol' ? 'active' : '' %>"></div>
-                    <div id="ada" class="tv-chart <%= firstActiveChart === 'ada' ? 'active' : '' %>"></div>
-                    <div id="bnb" class="tv-chart <%= firstActiveChart === 'bnb' ? 'active' : '' %>"></div>
-                    <div id="xpr" class="tv-chart <%= firstActiveChart === 'xpr' ? 'active' : '' %>"></div>
-                    <div id="ton" class="tv-chart <%= firstActiveChart === 'ton' ? 'active' : '' %>"></div>
-                    <div id="doge" class="tv-chart <%= firstActiveChart === 'doge' ? 'active' : '' %>"></div>
-                    <div id="pepe" class="tv-chart <%= firstActiveChart === 'pepe' ? 'active' : '' %>"></div>
-                </div>
+                <% if (approvedCharts.length > 0) { %>
+                    <div class="chart-wrapper">
+                        <div id="users-chart" class="tv-chart-host"></div>
+                    </div>
+                <% } %>
         
             </div>
         </div>
@@ -78,9 +77,6 @@
             <% if (currentUser) { %>
                 <a href="/create" class="btn btn-primary" style="margin-bottom: 20px; display: inline-block;">Create</a>
                 <div class="crypto-list">
-                    
-                    <% let myCoins = cryptos ? cryptos.filter(coin => coin.creator == currentUser.id) : []; %>
-        
                     <% if (myCoins.length > 0) { %>
                         
                         <% myCoins.forEach(function(coin) { %>
@@ -123,55 +119,47 @@
             <div class="crypto-layout">
                 
                 <div class="crypto-list">
-                    <button class="coin-btn active" onclick="switchChart(event, 'btc')">
+                    <button class="coin-btn active" data-chart-container="public-chart" data-symbol="BINANCE:BTCUSDT" onclick="switchChart(event)">
                         <span class="coin-name">Bitcoin</span> <span class="coin-ticker">BTC</span>
                     </button>
-                    <button class="coin-btn" onclick="switchChart(event, 'eth')">
+                    <button class="coin-btn" data-chart-container="public-chart" data-symbol="BINANCE:ETHUSDT" onclick="switchChart(event)">
                         <span class="coin-name">Ethereum</span> <span class="coin-ticker">ETH</span>
                     </button>
-                    <button class="coin-btn" onclick="switchChart(event, 'sol')">
+                    <button class="coin-btn" data-chart-container="public-chart" data-symbol="BINANCE:SOLUSDT" onclick="switchChart(event)">
                         <span class="coin-name">Solana</span> <span class="coin-ticker">SOL</span>
                     </button>
-                    <button class="coin-btn" onclick="switchChart(event, 'ada')">
+                    <button class="coin-btn" data-chart-container="public-chart" data-symbol="BINANCE:ADAUSDT" onclick="switchChart(event)">
                         <span class="coin-name">Cardano</span> <span class="coin-ticker">ADA</span>
                     </button>
-                    <button class="coin-btn" onclick="switchChart(event, 'bnb')">
+                    <button class="coin-btn" data-chart-container="public-chart" data-symbol="BINANCE:BNBUSDT" onclick="switchChart(event)">
                         <span class="coin-name">Binance Coin</span> <span class="coin-ticker">BNB</span>
                     </button>
-                    <button class="coin-btn" onclick="switchChart(event, 'xpr')">
-                        <span class="coin-name">Ripple</span> <span class="coin-ticker">XPR</span>
+                    <button class="coin-btn" data-chart-container="public-chart" data-symbol="BINANCE:XRPUSDT" onclick="switchChart(event)">
+                        <span class="coin-name">Ripple</span> <span class="coin-ticker">XRP</span>
                     </button>
-                    <button class="coin-btn" onclick="switchChart(event, 'ton')">
+                    <button class="coin-btn" data-chart-container="public-chart" data-symbol="BINANCE:TONUSDT" onclick="switchChart(event)">
                         <span class="coin-name">Toncoin</span> <span class="coin-ticker">TON</span>
                     </button>
-                    <button class="coin-btn" onclick="switchChart(event, 'doge')">
+                    <button class="coin-btn" data-chart-container="public-chart" data-symbol="BINANCE:DOGEUSDT" onclick="switchChart(event)">
                         <span class="coin-name">Dogecoin</span> <span class="coin-ticker">DOGE</span>
                     </button>
-                    <button class="coin-btn" onclick="switchChart(event, 'pepe')">
+                    <button class="coin-btn" data-chart-container="public-chart" data-symbol="BINANCE:PEPEUSDT" onclick="switchChart(event)">
                         <span class="coin-name">Pepe</span> <span class="coin-ticker">PEPE</span>
                     </button>
                 </div>
 
                 <div class="chart-wrapper">
-                    <div id="btc" class="tv-chart active"></div>
-                    <div id="eth" class="tv-chart"></div>
-                    <div id="sol" class="tv-chart"></div>
-                    <div id="ada" class="tv-chart"></div>
-                    <div id="bnb" class="tv-chart"></div>
-                    <div id="xpr" class="tv-chart"></div>
-                    <div id="ton" class="tv-chart"></div>
-                    <div id="doge" class="tv-chart"></div>
-                    <div id="pepe" class="tv-chart"></div>
+                    <div id="public-chart" class="tv-chart-host"></div>
                 </div>
 
             </div>
         </div>
     </main>
 
-    <script src="/js/menu.js"></script>
-    <script src="/js/crypt.js"></script>
-    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <script defer src="/js/menu.js"></script>
     <script type="module" src="https://widgets.tradingview-widget.com/w/en/tv-ticker-tape.js"></script>
+    <script defer type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <script defer src="/js/crypt.js"></script>
 </body>
 
 </html>
