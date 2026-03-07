@@ -1,3 +1,4 @@
+// #region DOM References
 const registerForm = document.getElementById('registerForm') || document.querySelector('.register-container form');
 const firstNameInput = document.getElementById('firstName');
 const lastNameInput = document.getElementById('lastName');
@@ -7,12 +8,16 @@ const emailInput = document.getElementById('email');
 const passwordInput = document.getElementById('password');
 const confirmInput = document.getElementById('confirm');
 const registerMessage = document.getElementById('registerMessage');
+// #endregion
 
+// #region Validation Constants
 const PASSWORD_MIN_LENGTH = 12;
 const NAME_PATTERN = /^[\p{L}][\p{L}\s'-]{1,99}$/u;
 const COUNTRY_PATTERN = /^[\p{L}][\p{L}\s'.()-]{1,99}$/u;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+// #endregion
 
+// #region Shared Helpers
 function normalizeText(value) {
     return value.trim().replace(/\s+/g, ' ');
 }
@@ -31,7 +36,9 @@ function setFormMessage(text, type = 'error') {
 
     registerMessage.classList.add(type === 'success' ? 'form-message--success' : 'form-message--error');
 }
+// #endregion
 
+// #region Validation Logic
 function parseDateOfBirth(rawValue) {
     const value = rawValue.trim();
     const match = value.match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
@@ -166,7 +173,9 @@ function validatePasswordMatch() {
     confirmInput.setCustomValidity('');
     return true;
 }
+// #endregion
 
+// #region Field Event Handlers
 if (firstNameInput) {
     firstNameInput.addEventListener('input', () => validateNameField(firstNameInput, 'First name'));
 }
@@ -210,7 +219,9 @@ if (passwordInput) {
 if (confirmInput) {
     confirmInput.addEventListener('input', validatePasswordMatch);
 }
+// #endregion
 
+// #region Country Options
 const fallbackCountries = [
     'Australia',
     'Brazil',
@@ -272,7 +283,9 @@ async function loadCountries() {
         fillCountryOptions(fallbackCountries);
     }
 }
+// #endregion
 
+// #region Password Visibility Toggle
 document.querySelectorAll('.password-toggle').forEach((btn) => {
     btn.addEventListener('click', () => {
         const input = document.getElementById(btn.dataset.target);
@@ -282,7 +295,9 @@ document.querySelectorAll('.password-toggle').forEach((btn) => {
         btn.classList.toggle('visible', isHidden);
     });
 });
+// #endregion
 
+// #region Registration Submission
 if (registerForm) {
     registerForm.addEventListener('submit', async (event) => {
         event.preventDefault();
@@ -361,5 +376,8 @@ if (registerForm) {
         }
     });
 }
+// #endregion
 
+// #region Initialization
 loadCountries();
+// #endregion

@@ -63,9 +63,10 @@ async function create({ name, surname, dateOfBirth, country, email, hashedPasswo
         });
 
         if (!defaultRole) {
-            throw new Error('Default role "User" not found. Run sql/001_create_roles_and_user_roles.sql first.');
+            throw new Error('Default role "User" not found. Please ensure it exists in the database.');
         }
 
+        // Link the new user to the default "User" role
         await UserRole.findOrCreate({
             where: { user_id: user.id, role_id: defaultRole.id },
             defaults: { user_id: user.id, role_id: defaultRole.id },
