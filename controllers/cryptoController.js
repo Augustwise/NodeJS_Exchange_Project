@@ -8,7 +8,7 @@ async function showCryptPage(req, res){
             cryptos: cryptos 
         });
     } catch (error) {
-        console.error("Помилка завантаження сторінки:", error);
+        console.error("Error loading page:", error);
         res.status(500).send("Internal Server Error");
     }
 }
@@ -37,7 +37,7 @@ async function createCrypto(req, res){
         res.redirect('/crypt'); 
 
     } catch (error) {
-        console.error("Помилка збереження крипти:", error);
+        console.error("Error saving cryptocurrency:", error);
         res.status(500).send("Internal Server Error");
     }
 }
@@ -62,7 +62,7 @@ async function showEditPage(req, res) {
             crypto: coin 
         });
     } catch (error) {
-        console.error("Помилка завантаження сторінки редагування:", error);
+        console.error("Error loading edit page:", error);
         res.status(500).send("Internal Server Error");
     }
 }
@@ -84,7 +84,7 @@ async function updateCrypto(req, res) {
 
         res.redirect('/crypt');
     } catch (error) {
-        console.error("Помилка оновлення крипти:", error);
+        console.error("Error updating cryptocurrency:", error);
         res.status(500).send("Internal Server Error");
     }
 }
@@ -104,7 +104,7 @@ async function deleteCrypto(req, res) {
 
         res.redirect('/crypt');
     } catch (error) {
-        console.error("Помилка видалення крипти:", error);
+        console.error("Error deleting cryptocurrency:", error);
         res.status(500).send("Internal Server Error");
     }
 }

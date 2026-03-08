@@ -149,7 +149,7 @@ body.contact-page {
 .submit-btn {
     width: 100%;
     background-color: #00ffa3;
-    color: #0d1116; /* Темний текст для контрасту */
+    color: #0d1116; /* Dark text for contrast */
     border: none;
     padding: 16px;
     border-radius: 8px;
@@ -199,7 +199,7 @@ body.contact-page {
 
 @keyframes slideOutTopRight {
     from { opacity: 0; transform: translate(-100px, 50px) rotate(-30deg) scale(0.5); }
-    to { opacity: 0.5; transform: translate(0, 0) rotate(15deg) scale(1); } /* Тут -10deg замінили на 15deg */
+    to { opacity: 0.5; transform: translate(0, 0) rotate(15deg) scale(1); } /* Changed from -10deg to 15deg */
 }
 
 

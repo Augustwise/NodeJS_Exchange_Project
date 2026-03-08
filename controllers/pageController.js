@@ -97,4 +97,11 @@ function contactPage(_req, res) {
     res.render('contact', { activePage: 'contact' });
 }
 
-module.exports = { home, loginPage, registerPage, accountPage, cryptPage, addCrypto, aboutPage, contactPage };
+module.exports = { home, 
+    loginPage, 
+    registerPage, 
+    accountPage, 
+    cryptPage, 
+    addCrypto, 
+    aboutPage, 
+    contactPage };
