@@ -1,5 +1,9 @@
 # NodeJS Exchange Project
 
+NodeJS Exchange Project is a server-side web application for displaying exchange rates and working with a user-managed cryptocurrency catalog. The project loads current and historical currency data, renders it in the browser, supports user registration and login, and includes an admin area for moderating submitted cryptocurrencies.
+
+The application is built on `Node.js` and `Express` with server-side rendering through `EJS` and follows an `MVC`-style structure. Routing is separated into `routes`, request handling and business logic live in `controllers`, data access is implemented in `models` via `Sequelize`, and the UI is rendered through `views`. The project uses `MySQL` as the main database, `express-session` for session-based authentication, `bcryptjs` for password hashing, and plain frontend JavaScript with CSS for client-side interactions.
+
 ## How to run
 
 1. Install dependencies:
