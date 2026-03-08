@@ -75,6 +75,10 @@ async function create({ name, surname, dateOfBirth, country, email, hashedPasswo
     });
 }
 
+/**
+ * Finds a user by ID and returns basic user fields.
+ * Returns null if the user does not exist.
+ */
 async function findById(userId) {
     const user = await User.findByPk(userId, {
         attributes: ['id', 'name', 'surname', 'email'],
@@ -83,6 +87,10 @@ async function findById(userId) {
     return user || null;
 }
 
+/**
+ * Checks whether the specified user has the given role.
+ * Returns true if the role is assigned, otherwise false.
+ */
 async function hasRole(userId, roleName) {
     const role = await Role.findOne({
         where: { name: roleName },
@@ -103,6 +111,10 @@ async function hasRole(userId, roleName) {
     return Boolean(roleLink);
 }
 
+/**
+ * Assigns a role to a user if the link does not already exist.
+ * Throws an error when the requested role is missing in the database.
+ */
 async function grantRole(userId, roleName) {
     const role = await Role.findOne({
         where: { name: roleName },
@@ -120,6 +132,10 @@ async function grantRole(userId, roleName) {
     });
 }
 
+/**
+ * Removes a role from a user.
+ * Returns the number of deleted links; 0 means nothing was removed.
+ */
 async function revokeRole(userId, roleName) {
     const role = await Role.findOne({
         where: { name: roleName },
@@ -136,6 +152,10 @@ async function revokeRole(userId, roleName) {
     });
 }
 
+/**
+ * Loads all users together with their roles for the admin panel.
+ * Adds convenience fields with role names and Admin-role presence.
+ */
 async function findAllForAdminPanel() {
     const users = await User.findAll({
         attributes: ['id', 'name', 'surname', 'email', 'country', 'date_of_birth', 'create_time'],
