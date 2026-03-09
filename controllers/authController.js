@@ -1,7 +1,4 @@
 // controllers/authController.js — handles user registration, login, and logout.
-//
-// In MVC, "Controllers" receive HTTP requests, call Models to read/write data,
-// and send back a response.  No SQL lives here — that belongs in the Model.
 
 const bcrypt    = require('bcryptjs');
 const UserModel = require('../models/userModel');
