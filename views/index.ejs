@@ -12,10 +12,29 @@
     <link rel="stylesheet" href="/styles/home.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <% const serializedRates = JSON.stringify(locals.rates || {}).replace(/</g, '\\u003c'); %>
+    <% const serializedHistory = JSON.stringify(locals.history || {}).replace(/</g, '\\u003c'); %>
+    <script id="server-rates-data" type="application/json"><%- serializedRates %></script>
+    <script id="server-history-data" type="application/json"><%- serializedHistory %></script>
     <script>
-    // Assign to window (global scope) so chart script can access them
-    window.SERVER_RATES = <%- JSON.stringify(locals.rates || {}) %>;
-    window.SERVER_HISTORY = <%- JSON.stringify(locals.history || {}) %>;
+    function parseServerJson(elementId) {
+        const el = document.getElementById(elementId);
+
+        if (!el) {
+            return {};
+        }
+
+        try {
+            return JSON.parse(el.textContent || '{}');
+        } catch (error) {
+            console.warn(`Failed to parse server JSON from ${elementId}`, error);
+            return {};
+        }
+    }
+
+    // Assign to window (global scope) so chart and converter scripts can access them.
+    window.SERVER_RATES = parseServerJson('server-rates-data');
+    window.SERVER_HISTORY = parseServerJson('server-history-data');
     
     console.log('Template: SERVER_RATES loaded with', Object.keys(window.SERVER_RATES || {}).length, 'currencies');
     console.log('Template: SERVER_HISTORY loaded with', Object.keys(window.SERVER_HISTORY || {}).length, 'currencies');
@@ -147,9 +166,7 @@
     <script src="/js/converter.js"></script>
 
     <script>
-/* =========================================
-   CYBER ANIMATION UPDATE DIGITAL (Light Flash)
-========================================= */
+
 function updateValueWithFlash(elementId, newValue) {
     const el = document.getElementById(elementId);
     if (!el) return;
