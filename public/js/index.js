@@ -128,11 +128,6 @@
             console.log('Sample USD history records:', (window.SERVER_HISTORY.USD || []).slice(0, 3));
         }
 
-
-        // function changeCurrency(currencyKey) {
-        //     console.warn('changeCurrency(key) is deprecated; use converter selects to change the chart.');
-        // }
-
         // current displayed time period (1D, 1W, 1M)
         let currentPeriod = '1D';
         function updateTimePeriod(period) {
@@ -144,7 +139,6 @@
             try { if (typeof syncChartToConverter === 'function') syncChartToConverter(); } catch (e) { console.warn('Failed to refresh chart after period change', e); }
         }
 
-        //window.changeCurrency = changeCurrency;
         window.updateTimePeriod = updateTimePeriod;
 
         try {
