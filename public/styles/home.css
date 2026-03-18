@@ -594,17 +594,18 @@ body.menu-open {
         display: block;
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0.6);
+        background: linear-gradient(270deg, rgba(13, 17, 22, 0.26) 0%, rgba(13, 17, 22, 0.1) 24%, rgba(13, 17, 22, 0) 48%);
         opacity: 0;
         visibility: hidden;
         transition: 0.3s;
         z-index: 1100;
-        backdrop-filter: blur(3px);
+        pointer-events: none;
     }
 
     .menu-overlay.is-open {
         opacity: 1;
         visibility: visible;
+        pointer-events: none;
     }
 
     .logInButtons {

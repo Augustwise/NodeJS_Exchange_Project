@@ -232,7 +232,7 @@ body.menu-open {
         display: block;
         position: fixed;
         inset: 0;
-        background: rgba(2, 6, 12, 0.58);
+        background: linear-gradient(270deg, rgba(2, 6, 12, 0.22) 0%, rgba(2, 6, 12, 0.08) 24%, rgba(2, 6, 12, 0) 48%);
         opacity: 0;
         visibility: hidden;
         pointer-events: none;
@@ -243,7 +243,7 @@ body.menu-open {
     .menu-overlay.is-open {
         opacity: 1;
         visibility: visible;
-        pointer-events: auto;
+        pointer-events: none;
     }
 
     .logInButtons {

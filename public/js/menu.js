@@ -21,6 +21,18 @@
     });
 
     menuOverlay.addEventListener('click', () => setMenuState(false));
+    document.addEventListener('click', (event) => {
+        if (!mainNav.classList.contains('is-open')) {
+            return;
+        }
+
+        const clickedInsideNav = mainNav.contains(event.target);
+        const clickedToggle = menuToggle.contains(event.target);
+
+        if (!clickedInsideNav && !clickedToggle) {
+            setMenuState(false);
+        }
+    });
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             setMenuState(false);
