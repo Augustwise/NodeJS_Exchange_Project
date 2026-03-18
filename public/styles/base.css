@@ -16,7 +16,7 @@
 
 html {
     overflow-x: hidden;
-    background-color: var(--bg-color); 
+    background-color: var(--bg-color);
 }
 
 body {
@@ -256,7 +256,7 @@ body.menu-open {
         padding: 16px;
     }
 
-.name {
+    .name {
         font-size: 1.35rem;
         order: 1;
         flex: 1;
@@ -308,7 +308,7 @@ body.menu-open {
 
 ::selection {
     background-color: #00ffa3;
-    color: #0d1116;  
+    color: #0d1116;
     text-shadow: none;
 }
 
@@ -319,21 +319,21 @@ body.menu-open {
 }
 
 ::-webkit-scrollbar {
-    width: 8px; 
-    height: 8px; 
+    width: 8px;
+    height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-    background: #0d1116; 
+    background: #0d1116;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #232833; 
+    background: #232833;
     border-radius: 10px;
     transition: background 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #00ffa3; 
+    background: #00ffa3;
     box-shadow: 0 0 10px rgba(0, 255, 163, 0.5);
 }
