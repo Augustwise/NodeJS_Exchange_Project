@@ -12,6 +12,32 @@
         return rBase / rQuote;
     }
 
+    function parseHistoryDate(dateStr) {
+        if (!dateStr || typeof dateStr !== 'string') return NaN;
+        const parts = dateStr.split('.');
+        if (parts.length === 3) {
+            const [day, month, year] = parts;
+            return new Date(`${year}-${month}-${day}`);
+        }
+        return new Date(dateStr);
+    }
+
+    function dedupeByDate(records) {
+        const unique = new Map();
+        (records || []).forEach((row) => {
+            if (!row || !row.date) return;
+            // Keep the last occurrence per date so "today" uses the latest available value.
+            unique.set(row.date, row);
+        });
+        return Array.from(unique.values())
+            .sort((a, b) => parseHistoryDate(a.date) - parseHistoryDate(b.date));
+    }
+
+    function sliceLast(items, n) {
+        if (!Array.isArray(items)) return [];
+        return items.slice(Math.max(0, items.length - n));
+    }
+
     function makeSeries(centerValue, points = 6) {
         const out = [];
         let v = centerValue;
@@ -156,19 +182,22 @@
 
                 try {
                     const hist = window.SERVER_HISTORY || {};
-                    const baseHist = hist[base] || null;
-                    const quoteHist = hist[quote] || null;
+                    const rawBaseHist = hist[base] || [];
+                    const rawQuoteHist = hist[quote] || [];
 
-                    if (quote === 'UAH' && baseHist && baseHist.length > 0) {
+                    const baseHist = dedupeByDate(rawBaseHist);
+                    const quoteHist = dedupeByDate(rawQuoteHist);
+
+                    if (quote === 'UAH' && baseHist.length > 0) {
                         labels = baseHist.map(d => d.date);
                         series = baseHist.map(d => parseFloat(Number(d.rate).toFixed(2)));
-                    } else if (baseHist && quoteHist && baseHist.length > 0 && quoteHist.length > 0) {
+                    } else if (baseHist.length > 0 && quoteHist.length > 0) {
                         const qByDate = new Map(quoteHist.map(d => [d.date, d.rate]));
                         const aligned = baseHist.filter(d => qByDate.has(d.date));
                         labels = aligned.map(d => d.date);
                         series = aligned.map(d => {
                             const qb = qByDate.get(d.date);
-                            const val = (d.rate && qb) ? (d.rate / qb) : null;
+                            const val = (d.rate != null && qb != null) ? (d.rate / qb) : null;
                             return val != null && isFinite(val) ? parseFloat(Number(val).toFixed(2)) : null;
                         }).filter(v => v != null);
                     } else {
@@ -180,64 +209,29 @@
 
                 // Respect selected time period (1D, 1W, 1M)
                 try {
-                    const periodMap = { '1D': 1, '1W': 7, '1M': 30 };
-                    const minPoints = { '1D': 3, '1W': 7, '1M': 30 };
+                    const periodMap = { '1D': 2, '1W': 7, '1M': 30 };
                     const desired = periodMap[currentPeriod] || series.length;
-                    const minimum = minPoints[currentPeriod] || 1;
 
                     if (series.length > desired) {
-                        series = series.slice(series.length - desired);
-                        labels = labels.slice(labels.length - desired);
+                        series = sliceLast(series, desired);
+                        labels = sliceLast(labels, desired);
                     }
 
-                    // If the result is too short for good visualization (e.g. 1 point for 1D), pad or synthesize
-                    if (currentPeriod === '1D' && series.length < minimum) {
-                        const lastVal = series.length ? series[series.length - 1] : (typeof rate === 'number' ? rate : null);
-                        if (lastVal != null && isFinite(lastVal)) {
-                            // Build a tiny 3-point series around the last value so the chart shows a curve
-                            const p1 = parseFloat((lastVal * 0.997).toFixed(4));
-                            const p2 = parseFloat((lastVal * 0.999).toFixed(4));
-                            const p3 = parseFloat((lastVal * 1.001).toFixed(4));
-                            series = [p1, p2, lastVal, p3];
-                            // reuse last label for simplicity or create placeholder dates
-                            const lastLabel = labels.length ? labels[labels.length - 1] : '';
-                            labels = [lastLabel, lastLabel, lastLabel, lastLabel];
-                        }
+                    if (currentPeriod === '1D' && series.length >= 2) {
+                        // Ensure we have exactly yesterday+today (last two unique dates)
+                        series = sliceLast(series, 2);
+                        labels = sliceLast(labels, 2);
                     }
                 } catch (e) {
                     // ignore and show full series
                 }
 
-                if (series.length > 0) {
-                    series[series.length - 1] = parseFloat(rate.toFixed(2));
-                }
-
                 let changePercent = 0;
-
-                const hist = window.SERVER_HISTORY || {};
-                const baseHist = hist[base] || [];
-                const quoteHist = hist[quote] || [];
-
-                if (baseHist.length > 0) {
-
-                    let startRate = null;
-
-                    const firstBase = baseHist[baseHist.length - 1];
-
-                    if (quote === 'UAH') {
-                        startRate = firstBase.rate;
-                    } else if (quoteHist.length) {
-
-                        const qByDate = new Map(quoteHist.map(d => [d.date, d.rate]));
-                        const qRate = qByDate.get(firstBase.date);
-
-                        if (qRate) {
-                            startRate = firstBase.rate / qRate;
-                        }
-                    }
-
-                    if (startRate) {
-                        changePercent = ((rate - startRate) / startRate) * 100;
+                if (series.length >= 2) {
+                    const prev = series[series.length - 2];
+                    const last = series[series.length - 1];
+                    if (prev != null && prev !== 0 && isFinite(prev) && isFinite(last)) {
+                        changePercent = ((last - prev) / prev) * 100;
                     }
                 }
 
