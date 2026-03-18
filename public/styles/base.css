@@ -14,10 +14,15 @@
     font-family: 'Roboto', sans-serif;
 }
 
-html,
-body {
-    width: 100%;
+html {
     overflow-x: hidden;
+    background-color: var(--bg-color); 
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
 }
 
 body {
@@ -295,4 +300,40 @@ body.menu-open {
     header {
         padding: 14px 12px;
     }
+}
+
+/* =========================================
+   GLOBAL CYBER SCROLLBAR AND TEXT HIGHLIGHTING
+========================================= */
+
+::selection {
+    background-color: #00ffa3;
+    color: #0d1116;  
+    text-shadow: none;
+}
+
+::-moz-selection {
+    background-color: #00ffa3;
+    color: #0d1116;
+    text-shadow: none;
+}
+
+::-webkit-scrollbar {
+    width: 8px; 
+    height: 8px; 
+}
+
+::-webkit-scrollbar-track {
+    background: #0d1116; 
+}
+
+::-webkit-scrollbar-thumb {
+    background: #232833; 
+    border-radius: 10px;
+    transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #00ffa3; 
+    box-shadow: 0 0 10px rgba(0, 255, 163, 0.5);
 }

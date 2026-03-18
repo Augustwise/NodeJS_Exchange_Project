@@ -1,6 +1,50 @@
+/* =========================================
+   BACKGROUND CYBER SPHERES (Ambient Orbs)
+========================================= */
+.login-page, .register-page {
+    position: relative;
+    z-index: 0;
+}
+
+.login-page::before, .register-page::before,
+.login-page::after, .register-page::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    z-index: -1;
+    animation: floatOrbs 10s infinite alternate ease-in-out;
+    pointer-events: none; /* Щоб вони не заважали клікати */
+}
+
+.login-page::before, .register-page::before {
+    width: 400px; 
+    height: 400px;
+    background: rgba(0, 255, 163, 0.12); 
+    top: 5%; 
+    left: 5%;
+}
+
+.login-page::after, .register-page::after {
+    width: 500px; 
+    height: 500px;
+    background: rgba(0, 184, 255, 0.12); 
+    bottom: -10%; 
+    right: -5%;
+    animation-delay: -5s; 
+}
+
+@keyframes floatOrbs {
+    0%   { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(30px, 50px) scale(1.1); }
+}
+
+/* =========================================
+   BASIC CONTAINERS
+========================================= */
 .login-page .login-container,
 .register-page .register-container {
-    min-height: 100vh;
+    min-height: calc(100vh - 80px); 
     padding: 24px 16px;
     display: flex;
     flex-direction: column;
@@ -8,27 +52,75 @@
     align-items: center;
 }
 
+.login-page h1, .register-page h1 {
+    margin-bottom: 30px;
+    font-size: 2.2rem;
+    font-weight: 800;
+    text-align: center;
+    background: linear-gradient(90deg, #ffffff, #8b949e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* =========================================
+   GLASS ACCESS PANEL (Glassmorphism)
+========================================= */
 .login-page .login-container form,
 .register-page .register-container form {
-    background: var(--card-bg);
+    background: rgba(21, 26, 34, 0.6); 
     padding: 40px;
     border-radius: 20px;
     border: 1px solid var(--border-color);
-    width: min(100%, 350px);
+    width: min(100%, 380px);
     display: flex;
     flex-direction: column;
     gap: 20px;
+    backdrop-filter: blur(20px); 
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+    position: relative;
+    overflow: hidden;
+    animation: formAppear 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 
 .register-page .register-container form {
-    width: min(100%, 420px);
+    width: min(100%, 460px); 
 }
 
+.login-page .login-container form::before,
+.register-page .register-container form::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 3px;
+    background: linear-gradient(90deg, var(--primary-accent), #00b8ff);
+    opacity: 0.8;
+}
+
+@keyframes formAppear {
+    from { opacity: 0; transform: translateY(30px) scale(0.95); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* =========================================
+   FORM ELEMENTS AND CYBER FOCUS
+========================================= */
 .login-page .form-group,
 .register-page .form-group {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 8px;
+}
+
+.form-group label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-left: 4px;
+    transition: color 0.3s ease;
+}
+
+.form-group:focus-within label {
+    color: var(--text-main);
 }
 
 .register-page .input-with-icon,
@@ -36,67 +128,53 @@
     position: relative;
 }
 
-.input-with-password-toggle input {
+.input-with-password-toggle input { width: 100%; padding-right: 44px; }
+.register-page .input-with-icon input { padding-right: 44px; }
+
+.login-page .form-group input,
+.register-page .form-group input,
+.register-page .form-group select {
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    background: rgba(0, 0, 0, 0.3); 
+    color: var(--text-main);
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.register-page .form-group .input-with-icon input,
+.register-page .form-group .input-with-icon select {
+    padding-left: 44px; 
     width: 100%;
-    padding-right: 44px;
 }
 
-.register-page .input-with-icon input {
-    padding-right: 44px;
+.register-page .form-group select { appearance: none; cursor: pointer; }
+.register-page .form-group select:invalid { color: var(--text-muted); }
+.register-page #dateOfBirth { cursor: text; }
+
+.login-page .form-group input:focus,
+.register-page .form-group input:focus,
+.register-page .form-group select:focus {
+    border-color: var(--primary-accent);
+    background: rgba(0, 0, 0, 0.6);
+    box-shadow: 0 0 15px rgba(0, 255, 163, 0.15); 
 }
 
-.login-page .password-toggle,
-.register-page .password-toggle {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    width: 20px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0.5;
-    transition: opacity 0.2s;
-}
-
-.login-page .password-toggle:hover,
-.register-page .password-toggle:hover {
-    opacity: 1;
-    transform: translateY(-50%);
-    box-shadow: none;
-}
-
-.password-toggle img {
-    width: 20px;
-    height: 20px;
-}
-
-.password-toggle .icon-hide {
-    display: none;
-}
-
-.password-toggle.visible .icon-show {
-    display: none;
-}
-
-.password-toggle.visible .icon-hide {
-    display: block;
-}
-
+/* =========================================
+   PASSWORD ICONS AND SWITCHES
+========================================= */
 .register-page .input-icon {
     position: absolute;
-    left: 12px;
+    left: 14px;
     top: 50%;
     transform: translateY(-50%);
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
     color: var(--text-muted);
     pointer-events: none;
+    transition: all 0.3s ease;
 }
 
 .register-page .input-icon svg {
@@ -105,96 +183,324 @@
     fill: currentColor;
 }
 
-.login-page .form-group input,
-.register-page .form-group input,
-.register-page .form-group select {
-    padding: 12px;
-    border-radius: 10px;
-    border: 1px solid var(--border-color);
-    background: transparent;
-    color: var(--text-main);
-    outline: none;
-    transition: 0.3s;
+.form-group:focus-within .input-icon {
+    color: var(--primary-accent);
+    filter: drop-shadow(0 0 5px rgba(0, 255, 163, 0.5));
 }
 
-.register-page .form-group .input-with-icon input,
-.register-page .form-group .input-with-icon select {
-    padding-left: 40px;
-    width: 100%;
-}
-
-.register-page .form-group select {
-    appearance: none;
-    cursor: pointer;
-}
-
-.register-page .form-group select:invalid {
-    color: var(--text-muted);
-}
-
-.register-page #dateOfBirth {
-    cursor: text;
-}
-
-.login-page .form-group input:focus,
-.register-page .form-group input:focus,
-.register-page .form-group select:focus {
-    border-color: var(--primary-accent);
-}
-
-.login-page button,
-.register-page button {
-    background: var(--primary-accent);
+.login-page .password-toggle,
+.register-page .password-toggle {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
     border: none;
-    padding: 12px;
-    border-radius: 12px;
-    font-weight: 600;
+    padding: 4px;
     cursor: pointer;
-    transition: 0.3s;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.5;
+    transition: all 0.3s ease;
+    border-radius: 50%;
 }
 
-.login-page button:disabled,
-.register-page button:disabled {
-    opacity: 0.7;
+.login-page .password-toggle:hover,
+.register-page .password-toggle:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.form-group:focus-within .password-toggle { opacity: 0.8; }
+.form-group:focus-within .password-toggle:hover { opacity: 1; color: var(--primary-accent); }
+
+.password-toggle img { width: 20px; height: 20px; filter: invert(1); }
+.password-toggle .icon-hide { display: none; }
+.password-toggle.visible .icon-show { display: none; }
+.password-toggle.visible .icon-hide { display: block; }
+
+/* =========================================
+   GRADIENT INPUT BUTTON (Gradient Power)
+========================================= */
+.login-page button[type="submit"],
+.register-page button[type="submit"] {
+    background: linear-gradient(135deg, var(--primary-accent), #00c27a);
+    color: #000;
+    border: none;
+    padding: 14px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    margin-top: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+.login-page button[type="submit"]:disabled,
+.register-page button[type="submit"]:disabled {
+    background: #232833;
+    color: var(--text-muted);
     cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
 }
 
-.login-page button:hover,
-.register-page button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 227, 150, 0.4);
+.login-page button[type="submit"]:not(:disabled):hover,
+.register-page button[type="submit"]:not(:disabled):hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0, 255, 163, 0.4);
 }
 
+/* =========================================
+   MESSAGES AND LINKS
+========================================= */
 .login-page .form-message,
 .register-page .form-message {
     min-height: 22px;
-    margin-top: 14px;
     text-align: center;
     font-size: 0.95rem;
+    font-weight: 500;
+    margin-top: -5px;
 }
 
-.login-page .form-message--error,
-.register-page .form-message--error {
-    color: #ff8383;
-}
-
-.login-page .form-message--success,
-.register-page .form-message--success {
-    color: var(--primary-accent);
-}
+.login-page .form-message--error, .register-page .form-message--error { color: #ff4560; text-shadow: 0 0 10px rgba(255, 69, 96, 0.3); }
+.login-page .form-message--success, .register-page .form-message--success { color: var(--primary-accent); text-shadow: 0 0 10px rgba(0, 255, 163, 0.3); }
 
 .login-page .login-register-link,
 .register-page .login-register-link {
-    margin-top: 20px;
+    text-align: center;
     color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-top: 5px;
 }
 
 .login-page .login-register-link a,
 .register-page .login-register-link a {
     color: var(--primary-accent);
     text-decoration: none;
+    font-weight: 600;
+    transition: 0.3s;
 }
 
+.login-page .login-register-link a:hover,
+.register-page .login-register-link a:hover {
+    color: #ffffff;
+    text-shadow: 0 0 10px var(--primary-accent);
+}
+
+/* =========================================
+   NEW REGISTRATION LAYOUT (Grid Layout)
+========================================= */
+.register-page .register-container form {
+    width: min(100%, 800px); 
+    padding: 30px;
+}
+
+.reg-layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 30px;
+    align-items: stretch;
+}
+
+.reg-tabs {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-right: 1px solid var(--border-color);
+    padding-right: 20px;
+}
+
+.reg-tab-btn {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid transparent;
+    border-radius: 12px;
+    padding: 14px 16px;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.reg-tab-btn:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-main);
+}
+
+.reg-tab-btn.active {
+    background: rgba(0, 184, 255, 0.1);
+    border: 1px solid var(--secondary-accent);
+    color: #fff;
+    box-shadow: 0 0 15px rgba(0, 184, 255, 0.2);
+    transform: translateX(5px);
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--border-color);
+    transition: all 0.3s;
+}
+
+.reg-panels {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.reg-panel {
+    display: none;
+    animation: fadeInSlide 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    padding: 20px;
+    border-radius: 16px;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid transparent;
+    transition: all 0.3s;
+}
+
+.reg-panel.active {
+    display: block;
+}
+
+@keyframes fadeInSlide {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* =========================================
+   NEXT STEP BUTTON (Neon and large)
+========================================= */
+.next-btn {
+    background: rgba(0, 255, 163, 0.1); 
+    color: var(--primary-accent);
+    border: 1px solid var(--primary-accent);
+    padding: 12px 28px; 
+    font-size: 1.05rem;
+    border-radius: 10px;
+    margin-top: 24px;
+    cursor: pointer;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    float: right;
+    box-shadow: 0 0 10px rgba(0, 255, 163, 0.15); 
+}
+
+.next-btn:hover {
+    background: var(--primary-accent); 
+    color: #0d1116;
+    border-color: var(--primary-accent);
+    box-shadow: 0 0 20px rgba(0, 255, 163, 0.6), 0 0 40px rgba(0, 255, 163, 0.2); 
+    transform: translateY(-2px) scale(1.02); 
+}
+
+.final-btn {
+    width: 100%;
+    margin-top: 20px;
+}
+
+/* =========================================
+   VALIDATION STATUS (Green / Red neon)
+========================================= */
+
+/* Успішний ввід (Зелений) */
+.reg-tab-btn.is-valid {
+    border-color: var(--primary-accent);
+    color: var(--primary-accent);
+    background: rgba(0, 255, 163, 0.05);
+}
+.reg-tab-btn.is-valid .status-dot {
+    background: var(--primary-accent);
+    box-shadow: 0 0 8px var(--primary-accent);
+}
+.reg-panel.is-valid {
+    border-color: rgba(0, 255, 163, 0.4);
+    box-shadow: 0 0 20px rgba(0, 255, 163, 0.1) inset;
+}
+.reg-panel.is-valid input {
+    border-color: var(--primary-accent);
+}
+.reg-panel.is-valid .input-icon {
+    color: var(--primary-accent);
+}
+
+.reg-tab-btn.is-invalid {
+    border-color: #ff4560;
+    color: #ff4560;
+    background: rgba(255, 69, 96, 0.05);
+}
+.reg-tab-btn.is-invalid .status-dot {
+    background: #ff4560;
+    box-shadow: 0 0 8px #ff4560;
+}
+.reg-panel.is-invalid {
+    border-color: rgba(255, 69, 96, 0.4);
+    box-shadow: 0 0 20px rgba(255, 69, 96, 0.1) inset;
+    animation: shakeError 0.4s ease;
+}
+.reg-panel.is-invalid input {
+    border-color: #ff4560;
+}
+.reg-panel.is-invalid .input-icon {
+    color: #ff4560;
+}
+
+@keyframes shakeError {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+
+@media (max-width: 768px) {
+    .reg-layout {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    .reg-tabs {
+        flex-direction: row;
+        overflow-x: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+        padding-right: 0;
+        padding-bottom: 15px;
+    }
+    .reg-tab-btn {
+        flex: 0 0 auto;
+        padding: 10px 15px;
+        white-space: nowrap;
+    }
+    .reg-tab-btn .tab-name { display: none; } 
+    .reg-tab-btn { min-width: 40px; justify-content: center; }
+}
+
+/* =========================================
+   HIDE THE FOOTBAR ON AUTHORIZATION PAGES
+========================================= */
+.login-page footer,
+.register-page footer {
+    display: none !important;
+}
+
+.login-page .login-container,
+.register-page .register-container {
+    flex-grow: 1;
+}
+
+/* =========================================
+   MEDIA QUERIES (Adaptivity)
+========================================= */
 @media (max-width: 560px) {
     .login-page .login-container,
     .register-page .register-container {
@@ -204,15 +510,14 @@
     .login-page .login-container form,
     .register-page .register-container form {
         width: 100%;
-        padding: 24px 18px;
+        padding: 30px 20px;
         gap: 16px;
     }
-
 }
 
 @media (max-width: 400px) {
-    .login-page .login-container h1,
-    .register-page .register-container h1 {
-        font-size: 1.5rem;
+    .login-page h1,
+    .register-page h1 {
+        font-size: 1.8rem;
     }
 }

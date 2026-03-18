@@ -3,27 +3,75 @@ const renderTokens = new Map();
 
 let tradingViewReadyPromise;
 
+/* =========================================
+   РОЗУМНЕ ПЕРЕМИКАННЯ ВКЛАДОК ЗІ СВАЙПОМ
+========================================= */
 function switchMainTab(event, tabId) {
-    document.querySelectorAll('.tab-content').forEach((tab) => tab.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach((btn) => btn.classList.remove('active'));
-    document.querySelectorAll('.tab-btn-right').forEach((btn) => btn.classList.remove('active'));
+    if (event) event.preventDefault();
 
-    const nextTab = document.getElementById(tabId);
-    if (!nextTab) {
+    const currentActive = document.querySelector('.tab-content.active');
+    const targetTab = document.getElementById(tabId);
+
+    // Якщо клікнули на ту ж саму вкладку або вкладка не знайдена - нічого не робимо
+    if (!targetTab || (currentActive && currentActive === targetTab)) {
         return;
     }
 
-    nextTab.classList.add('active');
-    event.currentTarget.classList.add('active');
+    // 1. Оновлюємо дизайн кнопок у шапці (підсвічуємо активну)
+    document.querySelectorAll('.tab-btn, .tab-btn-right').forEach(btn => btn.classList.remove('active'));
+    if (event) event.currentTarget.classList.add('active');
 
-    const activeButton = nextTab.querySelector('.coin-btn.active[data-symbol]')
-        || nextTab.querySelector('.coin-btn[data-symbol]');
+    // Якщо це перше завантаження (немає активної вкладки), просто показуємо і вантажимо графік
+    if (!currentActive) {
+        targetTab.classList.add('active');
+        loadTabChart(targetTab);
+        return;
+    }
+
+    // Порядок вкладок для визначення напрямку анімації
+    const tabsOrder = ['public-crypto', 'users-crypto', 'my-crypto'];
+    const currentIndex = tabsOrder.indexOf(currentActive.id);
+    const targetIndex = tabsOrder.indexOf(tabId);
+    
+    // Визначаємо, куди рухаємось (вправо чи вліво)
+    const isMovingRight = targetIndex > currentIndex;
+
+    // 2. Анімація ВІД'ЇЗДУ старої вкладки
+    currentActive.style.animation = isMovingRight 
+        ? 'slideOutLeft 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards' 
+        : 'slideOutRight 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards';
+
+    // 3. Чекаємо поки від'їде стара вкладка (300мс), ховаємо її і показуємо нову
+    setTimeout(() => {
+        currentActive.classList.remove('active');
+        currentActive.style.animation = ''; // очищаємо стилі після анімації
+
+        targetTab.classList.add('active');
+        
+        // 4. Анімація ВИЇЗДУ нової вкладки
+        targetTab.style.animation = isMovingRight 
+            ? 'slideInRight 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards' 
+            : 'slideInLeft 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards';
+
+        // 5. Завантажуємо графік для нової вкладки (Ваша оригінальна логіка)
+        loadTabChart(targetTab);
+            
+    }, 300); // 300мс = час анімації slideOut
+}
+
+// Виніс логіку завантаження графіка в окрему функцію для зручності
+function loadTabChart(tabElement) {
+    const activeButton = tabElement.querySelector('.coin-btn.active[data-symbol]')
+        || tabElement.querySelector('.coin-btn[data-symbol]');
 
     if (activeButton) {
         renderChartFromButton(activeButton);
     }
 }
 
+/* =========================================
+   СТАНДАРТНА ЛОГІКА TRADING VIEW
+========================================= */
 function switchChart(event) {
     const button = event.currentTarget;
     const tab = button.closest('.tab-content');
@@ -135,10 +183,7 @@ function renderChart(containerId, symbol) {
 
 document.addEventListener('DOMContentLoaded', () => {
     const activeTab = document.querySelector('.tab-content.active');
-    const activeButton = activeTab?.querySelector('.coin-btn.active[data-symbol]')
-        || activeTab?.querySelector('.coin-btn[data-symbol]');
-
-    if (activeButton) {
-        renderChartFromButton(activeButton);
+    if (activeTab) {
+        loadTabChart(activeTab);
     }
 });

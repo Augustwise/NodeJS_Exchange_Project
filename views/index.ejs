@@ -145,6 +145,25 @@
     <script src="/js/index.js"></script>
     <script src="/js/menu.js"></script>
     <script src="/js/converter.js"></script>
-</body>
 
+    <script>
+/* =========================================
+   CYBER ANIMATION UPDATE DIGITAL (Light Flash)
+========================================= */
+function updateValueWithFlash(elementId, newValue) {
+    const el = document.getElementById(elementId);
+    if (!el) return;
+
+    if (el.innerText !== String(newValue)) {
+        el.innerText = newValue;
+
+        const animClass = (elementId === 'currentRate') ? 'flash-update' : 'flash-update-normal';
+        
+        el.classList.remove(animClass);
+        void el.offsetWidth; 
+        el.classList.add(animClass);
+    }
+}
+    </script>
+</body>
 </html>
