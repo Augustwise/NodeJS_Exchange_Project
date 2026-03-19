@@ -72,29 +72,15 @@
             gradient = 'transparent';
         }
 
-        // build some simple datasets
         const currencyData = {};
-        ['USD', 'EUR', 'GBP', 'BTC'].forEach((key) => {
-            const pair = key === 'BTC' ? { base: 'BTC', quote: 'USD' } : { base: key, quote: 'UAH' };
-            const rate = pairRate(pair.base, pair.quote);
-            const current = rate != null ? rate.toFixed(2) : '—';
-            const series = rate != null ? makeSeries(rate) : [];
-            currencyData[key] = {
-                current,
-                change: rate != null ? '+0.00%' : '—',
-                isPositive: true,
-                labels: ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00'],
-                data: series
-            };
-        });
 
         const chartConfig = {
             type: 'line',
             data: {
-                labels: currencyData.USD.labels,
+                labels: currencyData.labels,
                 datasets: [{
                     label: 'Price',
-                    data: currencyData.USD.data,
+                    data: currencyData.data,
                     borderColor: '#00E396',
                     backgroundColor: gradient || 'transparent',
                     borderWidth: 3,
