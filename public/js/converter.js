@@ -49,14 +49,11 @@ function updateConverterDial(el, newValue) {
     if (!el) return;
 
     if (el.value !== String(newValue)) {
-        // 1. Скидаємо стару анімацію
         el.classList.remove('roll-update');
         void el.offsetWidth; 
         
-        // 2. Запускаємо прокрутку (цифра падає вниз)
         el.classList.add('roll-update');
 
-        // 3. Підміняємо цифру, поки вона прозора (через 150 мілісекунд)
         setTimeout(() => {
             el.value = newValue;
         }, 150); 
