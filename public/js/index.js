@@ -110,9 +110,7 @@
         // Chart can accept canvas or context
         const myChart = new Chart(canvas, chartConfig);
         console.log('Chart initialized. SERVER_HISTORY keys:', Object.keys(window.SERVER_HISTORY || {}));
-        if (window.SERVER_HISTORY && window.SERVER_HISTORY.USD) {
-            console.log('Sample USD history records:', (window.SERVER_HISTORY.USD || []).slice(0, 3));
-        }
+    
 
         // current displayed time period (1D, 1W, 1M)
         let currentPeriod = '1D';
