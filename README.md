@@ -1,117 +1,88 @@
 # NodeJS Exchange Project
 
-NodeJS Exchange Project is a server-side web application for displaying exchange rates and working with a user-managed cryptocurrency catalog. The project loads current and historical currency data, renders it in the browser, supports user registration and login, and includes an admin area for moderating submitted cryptocurrencies.
+A server-side web application for displaying exchange rates and managing a user-submitted cryptocurrency catalog. Built with Node.js, Express, EJS, and PostgreSQL.
 
-The application is built on `Node.js` and `Express` with server-side rendering through `EJS` and follows an `MVC`-style structure. Routing is separated into `routes`, request handling and business logic live in `controllers`, data access is implemented in `models` via `Sequelize`, and the UI is rendered through `views`. The project uses `MySQL` as the main database, `express-session` for session-based authentication, `bcryptjs` for password hashing, and plain frontend JavaScript with CSS for client-side interactions.
+## Stack
 
-## How to run
+- **Node.js / Express** — web server
+- **EJS** — server-side templating
+- **Sequelize** — ORM
+- **PostgreSQL** — database
+- **express-session / bcryptjs** — auth
+
+## Setup
 
 1. Install dependencies:
 
 ```bash
-npm i
+npm install
 ```
 
-## Configuration
+2. Copy `.env.example` to `.env` and fill in your values:
 
-Create a `.env` file in the project root before starting the server.
-
-Example:
-
-```env
-PORT=3000
-AUTH_SECRET=your-session-secret
-DB_HOST=localhost
-DB_PORT=3306
-DB_NAME=your_database_name
-DB_USER=your_database_user
-DB_PASSWORD=your_database_password
+```bash
+cp .env.example .env
 ```
 
-Notes:
-
-- The app uses MySQL through Sequelize, so the database must exist and be reachable with the credentials above.
-- `PORT` is optional. If it is not set, the server starts on `3000`.
-- `AUTH_SECRET` is used to sign session cookies. If it is not set, the app falls back to a development-only default value.
-- Exchange rates and historical data are fetched from the National Bank of Ukraine API during startup and refreshed while the server is running.
-
-2. Start the server:
+3. Start the server:
 
 ```bash
 npm start
 ```
 
-3. Open in browser:
+Tables are created automatically on first run. The `User` and `Admin` roles are seeded on startup.
 
-```text
-http://localhost:3000
-```
+The app runs at `http://localhost:3001` by default.
 
-## API Endpoints
+## Environment variables
 
-### Page routes
+| Variable | Description |
+|---|---|
+| `DB_HOST` | PostgreSQL host |
+| `DB_PORT` | PostgreSQL port (default: 5432) |
+| `DB_NAME` | Database name |
+| `DB_USER` | Database user |
+| `DB_PASSWORD` | Database password |
+| `DB_SSL` | Enable SSL (`true` / `false`) |
+| `SESSION_SECRET` | Secret for signing session cookies |
+| `SERVER_PORT` | Port the server listens on (default: 3001) |
+| `CLIENT_ORIGIN` | Allowed client origin |
+| `NODE_ENV` | Environment (`development` / `production`) |
 
-- `GET /` — home page with exchange rates and historical data
-- `GET /login` — login page
-- `GET /register` — registration page
-- `GET /account` — logged-in user account page
-- `GET /crypt` — cryptocurrency listing page
-- `GET /create` — form for submitting a new cryptocurrency
-- `POST /create` — submit a new cryptocurrency for approval
-- `GET /crypto/:id/edit` — form for editing a cryptocurrency created by the current user
-- `POST /crypto/:id/edit` — update a cryptocurrency created by the current user
-- `POST /crypto/:id/delete` — delete a cryptocurrency created by the current user
-- `GET /about` — about page
-- `GET /contact` — contact page
-- `POST /logout` — log out the current user and redirect to `/login`
+## Routes
 
-### Authentication API
+### Pages
 
-- `POST /api/auth/register` — register a new user account
-- `POST /api/auth/login` — log in a user and create a session
-- `POST /api/auth/logout` — log out the current user and return JSON
+| Method | Path | Description |
+|---|---|---|
+| GET | `/` | Home — exchange rates |
+| GET | `/login` | Login page |
+| GET | `/register` | Registration page |
+| GET | `/account` | User account page |
+| GET | `/crypt` | Cryptocurrency listing |
+| GET | `/create` | Submit a new cryptocurrency |
+| POST | `/create` | Save new cryptocurrency |
+| GET | `/crypto/:id/edit` | Edit own cryptocurrency |
+| POST | `/crypto/:id/edit` | Update own cryptocurrency |
+| POST | `/crypto/:id/delete` | Delete own cryptocurrency |
+| POST | `/logout` | Log out and redirect to `/login` |
 
-Successful responses:
+### Auth API
 
-`POST /api/auth/register` returns `201 Created`:
+| Method | Path | Description |
+|---|---|---|
+| POST | `/api/auth/register` | Register a new user |
+| POST | `/api/auth/login` | Log in |
+| POST | `/api/auth/logout` | Log out (JSON response) |
 
-```json
-{
-  "ok": true,
-  "message": "Registration completed successfully."
-}
-```
+### Admin (requires Admin role)
 
-`POST /api/auth/login` returns `200 OK`:
-
-```json
-{
-  "ok": true,
-  "message": "Welcome back, <name>!",
-  "user": {
-    "id": 1,
-    "name": "John",
-    "surname": "Doe",
-    "email": "john@example.com"
-  }
-}
-```
-
-`POST /api/auth/logout` returns `200 OK`:
-
-```json
-{
-  "ok": true,
-  "message": "Logged out successfully."
-}
-```
-
-### Admin routes
-
-- `GET /admin` — admin dashboard with management sections
-- `GET /admin/users` — users list with role controls
-- `GET /admin/cryptos` — pending user currencies for moderation
-- `POST /admin/users/:userId/grant-admin` — grant Admin role
-- `POST /admin/users/:userId/revoke-admin` — revoke Admin role
-- `POST /admin/cryptos/:cryptoId/approve` — approve user currency
-- `POST /admin/cryptos/:cryptoId/reject` — reject and remove pending user currency
+| Method | Path | Description |
+|---|---|---|
+| GET | `/admin` | Admin dashboard |
+| GET | `/admin/users` | User list with role controls |
+| GET | `/admin/cryptos` | Pending cryptocurrencies |
+| POST | `/admin/users/:userId/grant-admin` | Grant Admin role |
+| POST | `/admin/users/:userId/revoke-admin` | Revoke Admin role |
+| POST | `/admin/cryptos/:cryptoId/approve` | Approve cryptocurrency |
+| POST | `/admin/cryptos/:cryptoId/reject` | Reject cryptocurrency |
