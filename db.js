@@ -8,8 +8,8 @@ const sequelize = new Sequelize(
     process.env.DB_PASSWORD,
     {
         host: process.env.DB_HOST,
-        port: Number(process.env.DB_PORT) || 3306,
-        dialect: 'mysql',
+        port: Number(process.env.DB_PORT) || 5432,
+        dialect: 'postgres',
         logging: false,
         pool: {
             max: 10,
@@ -17,9 +17,11 @@ const sequelize = new Sequelize(
             acquire: 30000,
             idle: 10000
         },
-        dialectOptions: {
-            ssl: { rejectUnauthorized: false }
-        }
+        ...(process.env.DB_SSL === 'true' && {
+            dialectOptions: {
+                ssl: { rejectUnauthorized: false }
+            }
+        })
     }
 );
 

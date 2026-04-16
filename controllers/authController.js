@@ -51,11 +51,7 @@ async function register(req, res) {
 
         return res.status(201).json({ ok: true, message: 'Registration completed successfully.' });
     } catch (error) {
-        if (
-            error.code === 'ER_DUP_ENTRY' ||
-            error.original?.code === 'ER_DUP_ENTRY' ||
-            error.name === 'SequelizeUniqueConstraintError'
-        ) {
+        if (error.name === 'SequelizeUniqueConstraintError') {
             return res.status(409).json({ ok: false, message: 'A user with this email already exists.' });
         }
         console.error('Registration error:', error);

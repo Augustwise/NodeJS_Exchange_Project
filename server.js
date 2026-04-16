@@ -12,10 +12,15 @@ require('dotenv').config();
 
 const app    = require('./app');
 const sequelize = require('./db');
+const { Role } = require('./models/entities');
 const { updateCurrencyRates } = require('./utils/currencyService');
 
+const PORT = process.env.SERVER_PORT || 3001;
 
-const PORT = process.env.PORT || 3000;
+async function seedRoles() {
+    await Role.findOrCreate({ where: { name: 'User' },  defaults: { description: 'Regular user' } });
+    await Role.findOrCreate({ where: { name: 'Admin' }, defaults: { description: 'Administrator' } });
+}
 
 async function startServer() {
     // Fetch exchange rates once at startup, then refresh every hour
@@ -28,7 +33,14 @@ async function startServer() {
         console.log('Database connection established.');
     } catch (error) {
         console.error('Database connection failed:', error.message);
+        process.exit(1);
     }
+
+    // Create tables if they don't exist, then seed required roles
+    await sequelize.sync();
+    console.log('Database tables synced.');
+    await seedRoles();
+    console.log('Roles seeded.');
 
     app.listen(PORT, () => {
         console.log(`Server is running at http://localhost:${PORT}`);
