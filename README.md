@@ -34,20 +34,6 @@ Tables are created automatically on first run. The `User` and `Admin` roles are 
 
 The app runs at `http://localhost:3001` by default.
 
-## Environment variables
-
-| Variable | Description |
-|---|---|
-| `DB_HOST` | PostgreSQL host |
-| `DB_PORT` | PostgreSQL port (default: 5432) |
-| `DB_NAME` | Database name |
-| `DB_USER` | Database user |
-| `DB_PASSWORD` | Database password |
-| `DB_SSL` | Enable SSL (`true` / `false`) |
-| `SESSION_SECRET` | Secret for signing session cookies |
-| `SERVER_PORT` | Port the server listens on (default: 3001) |
-| `CLIENT_ORIGIN` | Allowed client origin |
-| `NODE_ENV` | Environment (`development` / `production`) |
 
 ## Routes
 
