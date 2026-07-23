@@ -1,3 +1,4 @@
+const sequelize = require('../db');
 const { Crypto, User } = require('./entities');
 
 /**
@@ -6,7 +7,10 @@ const { Crypto, User } = require('./entities');
  */
 async function cryptoExist(cryptoName) {
     const crypto = await Crypto.findOne({
-        where: { cryptoName: cryptoName.toLowerCase() },
+        where: sequelize.where(
+            sequelize.fn('LOWER', sequelize.col('cryptoName')),
+            cryptoName.toLowerCase()
+        ),
         attributes: ['id'],
         raw: true
     });

@@ -24,7 +24,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(session({
-    secret:            process.env.AUTH_SECRET || 'dev-only-change-me',
+    secret:            process.env.SESSION_SECRET || 'dev-only-change-me',
     resave:            false,
     saveUninitialized: false, // Only save if something is stored
     cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 } // 7 days
