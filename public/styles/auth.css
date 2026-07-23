@@ -321,7 +321,7 @@
     text-align: center;
     font-size: 0.95rem;
     font-weight: 500;
-    margin-top: -5px;
+    margin-top: 18px;
 }
 
 .login-page .form-message--error,
@@ -341,7 +341,7 @@
     text-align: center;
     color: var(--text-muted);
     font-size: 0.95rem;
-    margin-top: 5px;
+    margin-top: 10px;
 }
 
 .login-page .login-register-link a,
