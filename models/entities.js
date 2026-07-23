@@ -37,7 +37,8 @@ const User = sequelize.define(
         },
         create_time: {
             type: DataTypes.DATE,
-            allowNull: true
+            allowNull: true,
+            defaultValue: DataTypes.NOW
         }
     },
     {
