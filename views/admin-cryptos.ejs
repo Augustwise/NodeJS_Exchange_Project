@@ -66,9 +66,11 @@
                                     <td data-label="Action">
                                         <div class="admin-actions">
                                             <form action="/admin/cryptos/<%= crypto.id %>/approve" method="post">
+                                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                                                 <button type="submit" class="btn btn-primary">Approve</button>
                                             </form>
                                             <form action="/admin/cryptos/<%= crypto.id %>/reject" method="post">
+                                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                                                 <button type="submit" class="btn btn-danger">Reject</button>
                                             </form>
                                         </div>

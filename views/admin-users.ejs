@@ -64,11 +64,13 @@
                                             <span class="self-label">Current admin</span>
                                         <% } else { %>
                                             <form action="/admin/users/<%= user.id %>/revoke-admin" method="post">
+                                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                                                 <button type="submit" class="btn btn-danger">Remove Admin</button>
                                             </form>
                                         <% } %>
                                     <% } else { %>
                                         <form action="/admin/users/<%= user.id %>/grant-admin" method="post">
+                                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                                             <button type="submit" class="btn btn-primary">Make Admin</button>
                                         </form>
                                     <% } %>

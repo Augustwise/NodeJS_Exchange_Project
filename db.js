@@ -1,6 +1,24 @@
 // db.js — initializes and exports a Sequelize connection instance.
 
+const fs   = require('fs');
+const path = require('path');
 const { Sequelize } = require('sequelize');
+
+function buildSslOptions() {
+    if (process.env.DB_SSL !== 'true') {
+        return undefined;
+    }
+
+    const ssl = {
+        rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED !== 'false'
+    };
+
+    if (process.env.DB_SSL_CA) {
+        ssl.ca = fs.readFileSync(path.resolve(process.env.DB_SSL_CA), 'utf8');
+    }
+
+    return ssl;
+}
 
 const sequelize = new Sequelize(
     process.env.DB_NAME,
@@ -19,10 +37,12 @@ const sequelize = new Sequelize(
         },
         ...(process.env.DB_SSL === 'true' && {
             dialectOptions: {
-                ssl: { rejectUnauthorized: false }
+                ssl: buildSslOptions()
             }
         })
     }
 );
 
 module.exports = sequelize;
+
+module.exports.buildSslOptions = buildSslOptions;

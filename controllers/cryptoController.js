@@ -80,7 +80,7 @@ async function updateCrypto(req, res) {
             return res.status(403).send("Permission denied or coin not found.");
         }
 
-        await cryptoModel.updateById(coinId, { cryptoName: cryptoName });
+        await cryptoModel.updateById(coinId, { cryptoName: cryptoName, isApproved: false });
 
         res.redirect('/crypt');
     } catch (error) {

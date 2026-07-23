@@ -2,13 +2,13 @@
 
 const bcrypt    = require('bcryptjs');
 const UserModel = require('../models/userModel');
+const loginRateLimit = require('../middleware/loginRateLimit');
 const { parseDate } = require('../utils/dateUtils');
 
 // POST /api/auth/register
 async function register(req, res) {
     const { name, surname, dateOfBirth, country, email, password, confirmPassword } = req.body;
 
-    // --- Input validation ---
     if (!name || name.trim().length < 2) {
         return res.status(400).json({ ok: false, message: 'First name must be at least 2 characters.' });
     }
@@ -79,12 +79,21 @@ async function login(req, res) {
             return res.status(401).json({ ok: false, message: 'Invalid email or password.' });
         }
 
-        req.session.userId = user.id;
+        loginRateLimit.reset(req.ip);
 
-        return res.status(200).json({
-            ok: true,
-            message: `Welcome back, ${user.name}!`,
-            user: { id: user.id, name: user.name, surname: user.surname, email: user.email }
+        req.session.regenerate((error) => {
+            if (error) {
+                console.error('Login error:', error);
+                return res.status(500).json({ ok: false, message: 'Failed to log in.' });
+            }
+
+            req.session.userId = user.id;
+
+            return res.status(200).json({
+                ok: true,
+                message: `Welcome back, ${user.name}!`,
+                user: { id: user.id, name: user.name, surname: user.surname, email: user.email }
+            });
         });
     } catch (error) {
         console.error('Login error:', error);
@@ -92,13 +101,11 @@ async function login(req, res) {
     }
 }
 
-// POST /api/auth/logout  (API version — returns JSON)
 function logout(req, res) {
     req.session.destroy();
     return res.status(200).json({ ok: true, message: 'Logged out successfully.' });
 }
 
-// POST /logout
 function logoutRedirect(req, res) {
     req.session.destroy();
     res.redirect('/login');

@@ -17,6 +17,7 @@
         <div class="chart-wrapper">
             <div class="stat-card" style="padding: 25px;">
                 <form action="/create" method="POST" class="add-form">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                     <h3>Add a New Cryptocurrency</h3>
                     <input type="text" name="cryptoName" placeholder="Name (e.g., Bitcoin)" required>
                     <button type="submit">Add</button>

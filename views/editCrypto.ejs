@@ -23,6 +23,7 @@
             </h2>
             
             <form action="/crypto/<%= crypto.id %>/edit" method="POST" class="add-form" style="margin: 0 auto;">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                 <label for="cryptoName" style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: -5px;">Project Name:</label>
                 
                 <input type="text" id="cryptoName" name="cryptoName" value="<%= crypto.cryptoName %>" required>
