@@ -68,7 +68,6 @@ function accountPage(req, res) {
     res.render('account', {
         activePage: 'account',
         account: {
-            id:          req.currentUser.id,
             name:        req.currentUser.name,
             surname:     req.currentUser.surname,
             dateOfBirth: formatDate(req.currentUser.date_of_birth),
