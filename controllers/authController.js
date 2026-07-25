@@ -1,9 +1,9 @@
 // controllers/authController.js — handles user registration, login, and logout.
 
-const bcrypt    = require('bcryptjs');
-const UserModel = require('../models/userModel');
-const loginRateLimit = require('../middleware/loginRateLimit');
-const { parseDate } = require('../utils/dateUtils');
+import bcrypt    from 'bcryptjs';
+import * as UserModel from '../models/userModel.js';
+import loginRateLimit from '../middleware/loginRateLimit.js';
+import { parseDate } from '../utils/dateUtils.js';
 
 // POST /api/auth/register
 async function register(req, res) {
@@ -111,4 +111,4 @@ function logoutRedirect(req, res) {
     res.redirect('/login');
 }
 
-module.exports = { register, login, logout, logoutRedirect };
+export { register, login, logout, logoutRedirect };

@@ -1,4 +1,4 @@
-const cryptoModel = require('../models/cryptoModel'); 
+import * as cryptoModel from '../models/cryptoModel.js';
 
 async function showCryptPage(req, res){
     try {
@@ -109,10 +109,10 @@ async function deleteCrypto(req, res) {
     }
 }
 
-module.exports = {
-    showCryptPage, 
-    createCrypto, 
-    showEditPage, 
-    updateCrypto, 
+export {
+    showCryptPage,
+    createCrypto,
+    showEditPage,
+    updateCrypto,
     deleteCrypto
 };

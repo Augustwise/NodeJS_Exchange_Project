@@ -2,8 +2,8 @@
 //
 // Each function here corresponds to one URL.
 
-const { currencyData, getHistoricalRates } = require('../utils/currencyService');
-const { formatDate }   = require('../utils/dateUtils');
+import { currencyData, getHistoricalRates } from '../utils/currencyService.js';
+import { formatDate }   from '../utils/dateUtils.js';
 
 async function home(req, res) {
     // Fetch 30-day historical rates for every available currency (except UAH)
@@ -96,11 +96,13 @@ function contactPage(_req, res) {
     res.render('contact', { activePage: 'contact' });
 }
 
-module.exports = { home, 
-    loginPage, 
-    registerPage, 
-    accountPage, 
-    cryptPage, 
-    addCrypto, 
-    aboutPage, 
-    contactPage };
+export {
+    home,
+    loginPage,
+    registerPage,
+    accountPage,
+    cryptPage,
+    addCrypto,
+    aboutPage,
+    contactPage
+};

@@ -41,4 +41,4 @@ function formatDate(dateInput) {
     return `${day}.${month}.${year}`;
 }
 
-module.exports = { parseDate, formatDate };
+export { parseDate, formatDate };

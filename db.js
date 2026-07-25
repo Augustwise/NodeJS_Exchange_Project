@@ -1,8 +1,8 @@
 // db.js — initializes and exports a Sequelize connection instance.
 
-const fs   = require('fs');
-const path = require('path');
-const { Sequelize } = require('sequelize');
+import fs   from 'fs';
+import path from 'path';
+import { Sequelize } from 'sequelize';
 
 function buildSslOptions() {
     if (process.env.DB_SSL !== 'true') {
@@ -43,6 +43,6 @@ const sequelize = new Sequelize(
     }
 );
 
-module.exports = sequelize;
+sequelize.buildSslOptions = buildSslOptions;
 
-module.exports.buildSslOptions = buildSslOptions;
+export default sequelize;

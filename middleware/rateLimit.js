@@ -37,4 +37,4 @@ function createRateLimiter({ windowMs, maxAttempts, message }) {
     return limiter;
 }
 
-module.exports = createRateLimiter;
+export default createRateLimiter;

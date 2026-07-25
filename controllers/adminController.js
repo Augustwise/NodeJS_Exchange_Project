@@ -1,5 +1,5 @@
-const UserModel = require('../models/userModel');
-const cryptoModel = require('../models/cryptoModel');
+import * as UserModel from '../models/userModel.js';
+import * as cryptoModel from '../models/cryptoModel.js';
 
 function adminHome(_req, res) {
     return res.render('admin', { activePage: 'admin' });
@@ -146,7 +146,7 @@ async function rejectCrypto(req, res) {
     }
 }
 
-module.exports = {
+export {
     adminHome,
     usersPage,
     cryptosPage,

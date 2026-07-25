@@ -1,12 +1,17 @@
-const express    = require('express');
-const path       = require('path');
-const session    = require('express-session');
-const pgSession  = require('connect-pg-simple')(session);
-const sequelize  = require('./db');
-const loadUser   = require('./middleware/loadUser');
-const { csrfToken } = require('./middleware/csrf');
-const pageRoutes = require('./routes/pageRoutes');
-const authRoutes = require('./routes/authRoutes');
+import express    from 'express';
+import path       from 'path';
+import { fileURLToPath } from 'url';
+import session    from 'express-session';
+import connectPgSimple from 'connect-pg-simple';
+import sequelize  from './db.js';
+import loadUser   from './middleware/loadUser.js';
+import { csrfToken } from './middleware/csrf.js';
+import pageRoutes from './routes/pageRoutes.js';
+import authRoutes from './routes/authRoutes.js';
+
+const pgSession = connectPgSimple(session);
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app = express();
 
@@ -54,4 +59,4 @@ app.use('/', pageRoutes);
 
 app.use('/api/auth', authRoutes);
 
-module.exports = app;
+export default app;

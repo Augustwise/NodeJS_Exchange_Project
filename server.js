@@ -8,12 +8,12 @@
 // All Express configuration (middleware, routes) lives in app.js.
 // All database configuration lives in db.js.
 
-require('dotenv').config();
+import 'dotenv/config';
 
-const app    = require('./app');
-const sequelize = require('./db');
-const { Role } = require('./models/entities');
-const { updateCurrencyRates } = require('./utils/currencyService');
+import app    from './app.js';
+import sequelize from './db.js';
+import { Role } from './models/entities.js';
+import { updateCurrencyRates } from './utils/currencyService.js';
 
 const PORT = process.env.SERVER_PORT || 3001;
 

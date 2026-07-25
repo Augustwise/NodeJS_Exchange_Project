@@ -1,12 +1,13 @@
 
-const express          = require('express');
-const router           = express.Router();
-const pageController   = require('../controllers/pageController');
-const authController   = require('../controllers/authController');
-const cryptoController = require('../controllers/cryptoController');
-const adminController  = require('../controllers/adminController');
-const requireAdmin     = require('../middleware/requireAdmin');
-const { verifyCsrf }   = require('../middleware/csrf');
+import express          from 'express';
+import * as pageController   from '../controllers/pageController.js';
+import * as authController   from '../controllers/authController.js';
+import * as cryptoController from '../controllers/cryptoController.js';
+import * as adminController  from '../controllers/adminController.js';
+import requireAdmin     from '../middleware/requireAdmin.js';
+import { verifyCsrf }   from '../middleware/csrf.js';
+
+const router = express.Router();
 
 router.get('/',        pageController.home);
 router.get('/login',   pageController.loginPage);
@@ -33,4 +34,4 @@ router.post('/admin/cryptos/:cryptoId/reject', requireAdmin, verifyCsrf, adminCo
 
 router.post('/logout', verifyCsrf, authController.logoutRedirect);
 
-module.exports = router;
+export default router;

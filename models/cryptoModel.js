@@ -1,5 +1,5 @@
-const sequelize = require('../db');
-const { Crypto, User } = require('./entities');
+import sequelize from '../db.js';
+import { Crypto, User } from './entities.js';
 
 /**
  * Checks whether a cryptocurrency with the given name already exists.
@@ -113,7 +113,7 @@ async function rejectById(cryptoId) {
     });
 }
 
-module.exports = {
+export {
     cryptoExist,
     create,
     findAllNewest,

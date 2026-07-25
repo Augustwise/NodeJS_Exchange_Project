@@ -10,5 +10,5 @@ function requireAdmin(req, res, next) {
     return next();
 }
 
-module.exports = requireAdmin;
+export default requireAdmin;
 

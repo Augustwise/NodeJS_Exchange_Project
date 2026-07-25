@@ -1,5 +1,5 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../db');
+import { DataTypes } from 'sequelize';
+import sequelize from '../db.js';
 
 const User = sequelize.define(
     'User',
@@ -155,4 +155,4 @@ Crypto.belongsTo(User, {
     as: 'author'
 });
 
-module.exports = { User, Crypto, Role, UserRole };
+export { User, Crypto, Role, UserRole };

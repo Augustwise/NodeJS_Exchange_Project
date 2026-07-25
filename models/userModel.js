@@ -1,7 +1,7 @@
 // models/userModel.js — all database queries related to the User table.
 
-const sequelize = require('../db');
-const { User, Role, UserRole } = require('./entities');
+import sequelize from '../db.js';
+import { User, Role, UserRole } from './entities.js';
 
 /**
  * Finds a user by email address.
@@ -182,7 +182,7 @@ async function findAllForAdminPanel() {
     });
 }
 
-module.exports = {
+export {
     findByEmail,
     emailExists,
     findByIdForSession,

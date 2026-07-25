@@ -1,6 +1,6 @@
 // middleware/loadUser.js — attaches the logged-in user to every request.
 
-const UserModel = require('../models/userModel');
+import * as UserModel from '../models/userModel.js';
 
 async function loadUser(req, res, next) {
     res.locals.currentUser = null;
@@ -37,4 +37,4 @@ async function loadUser(req, res, next) {
     return next();
 }
 
-module.exports = loadUser;
+export default loadUser;

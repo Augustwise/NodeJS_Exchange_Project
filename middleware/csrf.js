@@ -5,7 +5,7 @@
 // verifyCsrf  — guards state-changing form routes; rejects requests whose
 //               `_csrf` body field does not match the session token.
 
-const crypto = require('crypto');
+import crypto from 'crypto';
 
 function csrfToken(req, res, next) {
     if (req.session.userId && !req.session.csrfToken) {
@@ -32,4 +32,4 @@ function verifyCsrf(req, res, next) {
     next();
 }
 
-module.exports = { csrfToken, verifyCsrf };
+export { csrfToken, verifyCsrf };

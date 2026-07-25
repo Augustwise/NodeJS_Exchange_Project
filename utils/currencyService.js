@@ -59,4 +59,4 @@ async function getHistoricalRates(currencyCode, daysCount) {
     }
 }
 
-module.exports = { currencyData, updateCurrencyRates, getHistoricalRates };
+export { currencyData, updateCurrencyRates, getHistoricalRates };
