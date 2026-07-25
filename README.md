@@ -34,41 +34,9 @@ Tables are created automatically on first run. The `User` and `Admin` roles are 
 
 The app runs at `http://localhost:3001` by default.
 
+## API documentation
 
-## Routes
+Every route is documented in [`docs/openapi.yaml`](docs/openapi.yaml) (OpenAPI 3.0.3).
 
-### Pages
-
-| Method | Path | Description |
-|---|---|---|
-| GET | `/` | Home — exchange rates |
-| GET | `/login` | Login page |
-| GET | `/register` | Registration page |
-| GET | `/account` | User account page |
-| GET | `/crypt` | Cryptocurrency listing |
-| GET | `/create` | Submit a new cryptocurrency |
-| POST | `/create` | Save new cryptocurrency |
-| GET | `/crypto/:id/edit` | Edit own cryptocurrency |
-| POST | `/crypto/:id/edit` | Update own cryptocurrency |
-| POST | `/crypto/:id/delete` | Delete own cryptocurrency |
-| POST | `/logout` | Log out and redirect to `/login` |
-
-### Auth API
-
-| Method | Path | Description |
-|---|---|---|
-| POST | `/api/auth/register` | Register a new user |
-| POST | `/api/auth/login` | Log in |
-| POST | `/api/auth/logout` | Log out (JSON response) |
-
-### Admin (requires Admin role)
-
-| Method | Path | Description |
-|---|---|---|
-| GET | `/admin` | Admin dashboard |
-| GET | `/admin/users` | User list with role controls |
-| GET | `/admin/cryptos` | Pending cryptocurrencies |
-| POST | `/admin/users/:userId/grant-admin` | Grant Admin role |
-| POST | `/admin/users/:userId/revoke-admin` | Revoke Admin role |
-| POST | `/admin/cryptos/:cryptoId/approve` | Approve cryptocurrency |
-| POST | `/admin/cryptos/:cryptoId/reject` | Reject cryptocurrency |
+To read it, paste the file into [editor.swagger.io](https://editor.swagger.io/), or
+open it with the Swagger Viewer / OpenAPI extension in your editor.

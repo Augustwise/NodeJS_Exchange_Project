@@ -1,0 +1,882 @@
+openapi: 3.0.3
+
+info:
+  title: NodeJS Exchange Project API
+  version: 1.0.0
+  description: |
+    Server-side web application for exchange rates and a user-submitted
+    cryptocurrency catalog.
+
+    Most endpoints are **HTML pages**, not a JSON API. Only the routes below
+    `/api/auth` return JSON. The HTML routes are included so that the full
+    surface of the server is visible in one place.
+
+    ## Authentication
+    Authentication uses a server-side session. `POST /api/auth/login` sets the
+    `connect.sid` cookie. Send that cookie with all later requests.
+
+    ## CSRF
+    All state-changing **form** routes (everything that is not below
+    `/api/auth`) need a CSRF token. The server puts a per-session token into
+    each rendered page. Send it back in the `_csrf` body field. A request with
+    a wrong or missing token gets `403`.
+
+    The `/api/auth` routes do **not** check CSRF.
+
+    ## Rate limits
+    Per IP address, fixed window:
+    - `POST /api/auth/login` — 5 attempts each 5 minutes. A good login clears
+      the counter.
+    - `POST /api/auth/register` — 10 attempts each 1 hour.
+
+    A blocked request gets `429`.
+  license:
+    name: ISC
+    url: https://opensource.org/licenses/ISC
+
+servers:
+  - url: http://localhost:{port}
+    description: Local development server
+    variables:
+      port:
+        default: '3001'
+        description: Set with the SERVER_PORT environment variable
+
+tags:
+  - name: Auth API
+    description: JSON endpoints for registration, login, and logout
+  - name: Pages
+    description: HTML pages
+  - name: Cryptocurrencies
+    description: User-submitted cryptocurrency catalog (HTML forms)
+  - name: Admin
+    description: Moderation pages and actions. Admin role necessary.
+
+paths:
+
+  # ---------------------------------------------------------------- Auth API
+
+  /api/auth/register:
+    post:
+      tags: [Auth API]
+      summary: Register a new user
+      description: |
+        Creates a user account. The password is hashed with bcrypt (cost 12).
+        No session is started — the client must call `/api/auth/login` after
+        a good registration.
+      operationId: register
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: Registration completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                ok: true
+                message: Registration completed successfully.
+        '400':
+          description: |
+            A field did not pass validation. The rules are:
+            - `name`, `surname`, `country` — minimum 2 characters
+            - `dateOfBirth` — a valid date in `DD.MM.YYYY` format
+            - `email` — must contain `@`
+            - `password` — minimum 12 characters and minimum one digit
+            - `confirmPassword` — must be equal to `password`
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                shortPassword:
+                  value:
+                    ok: false
+                    message: Password must be at least 12 characters and contain at least one digit.
+                badDate:
+                  value:
+                    ok: false
+                    message: Date of birth must be a valid date in DD.MM.YYYY format.
+        '409':
+          description: The email address is already in use
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                ok: false
+                message: A user with this email already exists.
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/JsonServerError'
+
+  /api/auth/login:
+    post:
+      tags: [Auth API]
+      summary: Log in
+      description: |
+        Checks the credentials, makes a new session ID (protection against
+        session fixation), and sets the `connect.sid` cookie.
+      operationId: login
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Logged in
+          headers:
+            Set-Cookie:
+              description: Session cookie — `HttpOnly`, `SameSite=Lax`, 7 day lifetime
+              schema:
+                type: string
+                example: connect.sid=s%3A...; Path=/; HttpOnly; SameSite=Lax
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+              example:
+                ok: true
+                message: Welcome back, Anna!
+                user:
+                  id: 1
+                  name: Anna
+                  surname: Petrenko
+                  email: anna@example.com
+        '400':
+          description: The email or the password is missing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                ok: false
+                message: Email and password are required.
+        '401':
+          description: |
+            Bad credentials. The message is the same for an unknown email and
+            for a wrong password, to prevent account enumeration.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                ok: false
+                message: Invalid email or password.
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/JsonServerError'
+
+  /api/auth/logout:
+    post:
+      tags: [Auth API]
+      summary: Log out (JSON response)
+      description: Destroys the session and answers with JSON.
+      operationId: logout
+      responses:
+        '200':
+          description: Logged out
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                ok: true
+                message: Logged out successfully.
+
+  # ------------------------------------------------------------------ Pages
+
+  /:
+    get:
+      tags: [Pages]
+      summary: Home page — exchange rates
+      description: |
+        Shows the current exchange rates and a 30-day history for each
+        currency. Rates are refreshed on the server each hour.
+      operationId: homePage
+      responses:
+        '200':
+          $ref: '#/components/responses/HtmlPage'
+
+  /login:
+    get:
+      tags: [Pages]
+      summary: Login page
+      operationId: loginPage
+      responses:
+        '200':
+          $ref: '#/components/responses/HtmlPage'
+        '302':
+          description: The user is already logged in — redirect to `/account`
+          headers:
+            Location:
+              schema:
+                type: string
+                example: /account
+
+  /register:
+    get:
+      tags: [Pages]
+      summary: Registration page
+      operationId: registerPage
+      responses:
+        '200':
+          $ref: '#/components/responses/HtmlPage'
+        '302':
+          description: The user is already logged in — redirect to `/account`
+          headers:
+            Location:
+              schema:
+                type: string
+                example: /account
+
+  /account:
+    get:
+      tags: [Pages]
+      summary: User account page
+      operationId: accountPage
+      responses:
+        '200':
+          $ref: '#/components/responses/HtmlPage'
+        '302':
+          $ref: '#/components/responses/RedirectToLogin'
+
+  /about:
+    get:
+      tags: [Pages]
+      summary: About page
+      operationId: aboutPage
+      responses:
+        '200':
+          $ref: '#/components/responses/HtmlPage'
+
+  /contact:
+    get:
+      tags: [Pages]
+      summary: Contact page
+      operationId: contactPage
+      responses:
+        '200':
+          $ref: '#/components/responses/HtmlPage'
+
+  /logout:
+    post:
+      tags: [Pages]
+      summary: Log out (form POST)
+      description: Destroys the session and redirects to `/login`.
+      operationId: logoutRedirect
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [_csrf]
+              properties:
+                _csrf:
+                  $ref: '#/components/schemas/CsrfToken'
+      responses:
+        '302':
+          description: Logged out — redirect to `/login`
+          headers:
+            Location:
+              schema:
+                type: string
+                example: /login
+        '403':
+          $ref: '#/components/responses/CsrfRejected'
+
+  # -------------------------------------------------------- Cryptocurrencies
+
+  /crypt:
+    get:
+      tags: [Cryptocurrencies]
+      summary: Cryptocurrency listing
+      description: Shows all catalog entries, newest first.
+      operationId: cryptListPage
+      responses:
+        '200':
+          $ref: '#/components/responses/HtmlPage'
+        '500':
+          $ref: '#/components/responses/HtmlServerError'
+
+  /create:
+    get:
+      tags: [Cryptocurrencies]
+      summary: Submission form for a new cryptocurrency
+      operationId: createCryptoPage
+      responses:
+        '200':
+          $ref: '#/components/responses/HtmlPage'
+    post:
+      tags: [Cryptocurrencies]
+      summary: Save a new cryptocurrency
+      description: |
+        Creates a catalog entry owned by the current user. New entries start
+        with `isApproved = false` and stay hidden from the public list until
+        an admin approves them.
+      operationId: createCrypto
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [cryptoName, _csrf]
+              properties:
+                cryptoName:
+                  type: string
+                  description: Name of the cryptocurrency. Must be unique.
+                  example: Bitcoin
+                _csrf:
+                  $ref: '#/components/schemas/CsrfToken'
+      responses:
+        '302':
+          description: Created — redirect to `/crypt`
+          headers:
+            Location:
+              schema:
+                type: string
+                example: /crypt
+        '400':
+          description: A cryptocurrency with this name is already in the catalog
+          content:
+            text/html:
+              schema:
+                type: string
+        '401':
+          description: Not logged in
+          content:
+            text/html:
+              schema:
+                type: string
+        '403':
+          $ref: '#/components/responses/CsrfRejected'
+        '500':
+          $ref: '#/components/responses/HtmlServerError'
+
+  /crypto/{id}/edit:
+    parameters:
+      - $ref: '#/components/parameters/CryptoId'
+    get:
+      tags: [Cryptocurrencies]
+      summary: Edit form for an owned cryptocurrency
+      description: Only the user that created the entry can open this page.
+      operationId: editCryptoPage
+      responses:
+        '200':
+          $ref: '#/components/responses/HtmlPage'
+        '302':
+          $ref: '#/components/responses/RedirectToLogin'
+        '403':
+          description: The entry belongs to a different user
+          content:
+            text/html:
+              schema:
+                type: string
+        '404':
+          description: No entry with this ID
+          content:
+            text/html:
+              schema:
+                type: string
+        '500':
+          $ref: '#/components/responses/HtmlServerError'
+    post:
+      tags: [Cryptocurrencies]
+      summary: Update an owned cryptocurrency
+      description: |
+        Changes the name and sets `isApproved` back to `false`, so that an
+        admin must approve the entry again.
+      operationId: updateCrypto
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [cryptoName, _csrf]
+              properties:
+                cryptoName:
+                  type: string
+                  example: Bitcoin
+                _csrf:
+                  $ref: '#/components/schemas/CsrfToken'
+      responses:
+        '302':
+          description: Updated — redirect to `/crypt`
+          headers:
+            Location:
+              schema:
+                type: string
+                example: /crypt
+        '403':
+          description: |
+            Bad CSRF token, or the entry does not exist, or it belongs to a
+            different user. A missing entry and a forbidden entry give the
+            same answer.
+          content:
+            text/html:
+              schema:
+                type: string
+        '500':
+          $ref: '#/components/responses/HtmlServerError'
+
+  /crypto/{id}/delete:
+    parameters:
+      - $ref: '#/components/parameters/CryptoId'
+    post:
+      tags: [Cryptocurrencies]
+      summary: Delete an owned cryptocurrency
+      operationId: deleteCrypto
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [_csrf]
+              properties:
+                _csrf:
+                  $ref: '#/components/schemas/CsrfToken'
+      responses:
+        '302':
+          description: Deleted — redirect to `/crypt`
+          headers:
+            Location:
+              schema:
+                type: string
+                example: /crypt
+        '403':
+          description: |
+            Bad CSRF token, or the entry does not exist, or it belongs to a
+            different user.
+          content:
+            text/html:
+              schema:
+                type: string
+        '500':
+          $ref: '#/components/responses/HtmlServerError'
+
+  # ------------------------------------------------------------------ Admin
+
+  /admin:
+    get:
+      tags: [Admin]
+      summary: Admin dashboard
+      operationId: adminHome
+      responses:
+        '200':
+          $ref: '#/components/responses/HtmlPage'
+        '302':
+          $ref: '#/components/responses/RedirectToLogin'
+        '403':
+          $ref: '#/components/responses/AdminOnly'
+
+  /admin/users:
+    get:
+      tags: [Admin]
+      summary: User list with role controls
+      operationId: adminUsersPage
+      parameters:
+        - $ref: '#/components/parameters/Feedback'
+        - $ref: '#/components/parameters/ErrorMessage'
+      responses:
+        '200':
+          $ref: '#/components/responses/HtmlPage'
+        '302':
+          $ref: '#/components/responses/RedirectToLogin'
+        '403':
+          $ref: '#/components/responses/AdminOnly'
+        '500':
+          $ref: '#/components/responses/HtmlServerError'
+
+  /admin/cryptos:
+    get:
+      tags: [Admin]
+      summary: Cryptocurrencies that wait for moderation
+      operationId: adminCryptosPage
+      parameters:
+        - $ref: '#/components/parameters/Feedback'
+        - $ref: '#/components/parameters/ErrorMessage'
+      responses:
+        '200':
+          $ref: '#/components/responses/HtmlPage'
+        '302':
+          $ref: '#/components/responses/RedirectToLogin'
+        '403':
+          $ref: '#/components/responses/AdminOnly'
+        '500':
+          $ref: '#/components/responses/HtmlServerError'
+
+  /admin/users/{userId}/grant-admin:
+    parameters:
+      - $ref: '#/components/parameters/UserId'
+    post:
+      tags: [Admin]
+      summary: Grant the Admin role
+      operationId: grantAdmin
+      requestBody:
+        $ref: '#/components/requestBodies/CsrfOnly'
+      responses:
+        '302':
+          $ref: '#/components/responses/AdminUsersRedirect'
+        '403':
+          $ref: '#/components/responses/AdminOnlyOrCsrf'
+
+  /admin/users/{userId}/revoke-admin:
+    parameters:
+      - $ref: '#/components/parameters/UserId'
+    post:
+      tags: [Admin]
+      summary: Revoke the Admin role
+      description: An admin cannot revoke their own Admin role.
+      operationId: revokeAdmin
+      requestBody:
+        $ref: '#/components/requestBodies/CsrfOnly'
+      responses:
+        '302':
+          $ref: '#/components/responses/AdminUsersRedirect'
+        '403':
+          $ref: '#/components/responses/AdminOnlyOrCsrf'
+
+  /admin/cryptos/{cryptoId}/approve:
+    parameters:
+      - $ref: '#/components/parameters/AdminCryptoId'
+    post:
+      tags: [Admin]
+      summary: Approve a cryptocurrency
+      description: Sets `isApproved = true`. An approved entry cannot be approved again.
+      operationId: approveCrypto
+      requestBody:
+        $ref: '#/components/requestBodies/CsrfOnly'
+      responses:
+        '302':
+          $ref: '#/components/responses/AdminCryptosRedirect'
+        '403':
+          $ref: '#/components/responses/AdminOnlyOrCsrf'
+
+  /admin/cryptos/{cryptoId}/reject:
+    parameters:
+      - $ref: '#/components/parameters/AdminCryptoId'
+    post:
+      tags: [Admin]
+      summary: Reject a cryptocurrency
+      description: |
+        Deletes the entry. Only an entry that waits for moderation can be
+        rejected — an already approved entry cannot.
+      operationId: rejectCrypto
+      requestBody:
+        $ref: '#/components/requestBodies/CsrfOnly'
+      responses:
+        '302':
+          $ref: '#/components/responses/AdminCryptosRedirect'
+        '403':
+          $ref: '#/components/responses/AdminOnlyOrCsrf'
+
+components:
+
+  securitySchemes:
+    sessionCookie:
+      type: apiKey
+      in: cookie
+      name: connect.sid
+      description: |
+        Session cookie set by `POST /api/auth/login`. Flags — `HttpOnly`,
+        `SameSite=Lax`, `Secure` when `NODE_ENV=production`. Lifetime 7 days.
+
+  parameters:
+    CryptoId:
+      name: id
+      in: path
+      required: true
+      description: ID of the cryptocurrency
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+      example: 1
+    AdminCryptoId:
+      name: cryptoId
+      in: path
+      required: true
+      description: ID of the cryptocurrency
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+      example: 1
+    UserId:
+      name: userId
+      in: path
+      required: true
+      description: ID of the target user
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+      example: 2
+    Feedback:
+      name: feedback
+      in: query
+      required: false
+      description: Success message, added by a redirect after an admin action
+      schema:
+        type: string
+      example: Admin role granted
+    ErrorMessage:
+      name: error
+      in: query
+      required: false
+      description: Error message, added by a redirect after an admin action
+      schema:
+        type: string
+      example: User not found
+
+  requestBodies:
+    CsrfOnly:
+      required: true
+      content:
+        application/x-www-form-urlencoded:
+          schema:
+            type: object
+            required: [_csrf]
+            properties:
+              _csrf:
+                $ref: '#/components/schemas/CsrfToken'
+
+  responses:
+    HtmlPage:
+      description: HTML page
+      content:
+        text/html:
+          schema:
+            type: string
+    HtmlServerError:
+      description: Internal server error
+      content:
+        text/html:
+          schema:
+            type: string
+            example: Internal Server Error
+    JsonServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            ok: false
+            message: Failed to log in.
+    RateLimited:
+      description: Too many attempts from this IP address
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            ok: false
+            message: Too many login attempts. Please try again in 5 minutes.
+    RedirectToLogin:
+      description: |
+        Not logged in — redirect to `/login`. (The code calls
+        `res.status(401).redirect(...)`, but Express always sends `302` for a
+        redirect, so the status on the wire is `302`.)
+      headers:
+        Location:
+          schema:
+            type: string
+            example: /login
+    CsrfRejected:
+      description: Bad or missing CSRF token
+      content:
+        text/html:
+          schema:
+            type: string
+            example: Invalid or missing CSRF token.
+    AdminOnly:
+      description: The user is logged in but does not have the Admin role
+      content:
+        text/html:
+          schema:
+            type: string
+            example: Access denied. Admins only.
+    AdminOnlyOrCsrf:
+      description: No Admin role, or a bad or missing CSRF token
+      content:
+        text/html:
+          schema:
+            type: string
+    AdminUsersRedirect:
+      description: |
+        Always a redirect to `/admin/users`. The result is in the query
+        string — `?feedback=...` when the action was successful,
+        `?error=...` when it was not.
+      headers:
+        Location:
+          schema:
+            type: string
+            example: /admin/users?feedback=Admin+role+granted
+    AdminCryptosRedirect:
+      description: |
+        Always a redirect to `/admin/cryptos`. The result is in the query
+        string — `?feedback=...` when the action was successful,
+        `?error=...` when it was not.
+      headers:
+        Location:
+          schema:
+            type: string
+            example: /admin/cryptos?feedback=Crypto+approved
+
+  schemas:
+
+    CsrfToken:
+      type: string
+      description: |
+        Per-session CSRF token. Every rendered page contains it in a hidden
+        `_csrf` input field.
+      example: 3f9a1c7e5b2d8a604f1e9c3b7d5a2e8f0c4b6d1a9e7f3c5b2d8a604f1e9c3b7d
+
+    RegisterRequest:
+      type: object
+      required: [name, surname, dateOfBirth, country, email, password, confirmPassword]
+      properties:
+        name:
+          type: string
+          minLength: 2
+          example: Anna
+        surname:
+          type: string
+          minLength: 2
+          example: Petrenko
+        dateOfBirth:
+          type: string
+          pattern: '^\d{2}\.\d{2}\.\d{4}$'
+          description: Date of birth in `DD.MM.YYYY` format
+          example: 14.03.1995
+        country:
+          type: string
+          minLength: 2
+          example: Ukraine
+        email:
+          type: string
+          format: email
+          example: anna@example.com
+        password:
+          type: string
+          format: password
+          minLength: 12
+          description: Minimum 12 characters, with minimum one digit
+          example: correct-horse-9-battery
+        confirmPassword:
+          type: string
+          format: password
+          description: Must be equal to `password`
+          example: correct-horse-9-battery
+
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+          example: anna@example.com
+        password:
+          type: string
+          format: password
+          example: correct-horse-9-battery
+
+    LoginResponse:
+      type: object
+      properties:
+        ok:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: Welcome back, Anna!
+        user:
+          $ref: '#/components/schemas/UserSummary'
+
+    UserSummary:
+      type: object
+      description: The public part of a user record. The password is never returned.
+      properties:
+        id:
+          type: integer
+          format: int32
+          example: 1
+        name:
+          type: string
+          example: Anna
+        surname:
+          type: string
+          example: Petrenko
+        email:
+          type: string
+          format: email
+          example: anna@example.com
+
+    Crypto:
+      type: object
+      description: |
+        A catalog entry. This object is rendered into HTML — no endpoint
+        returns it as JSON. It is documented here for the data model.
+      properties:
+        id:
+          type: integer
+          format: int32
+          example: 1
+        cryptoName:
+          type: string
+          maxLength: 255
+          example: Bitcoin
+        creator:
+          type: integer
+          format: int32
+          description: ID of the user that created the entry
+          example: 1
+        isApproved:
+          type: boolean
+          description: An admin must approve the entry before it becomes public
+          default: false
+          example: false
+
+    SuccessResponse:
+      type: object
+      properties:
+        ok:
+          type: boolean
+          example: true
+        message:
+          type: string
+
+    ErrorResponse:
+      type: object
+      properties:
+        ok:
+          type: boolean
+          example: false
+        message:
+          type: string
+
+security:
+  - sessionCookie: []
